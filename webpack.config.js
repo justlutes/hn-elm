@@ -9,7 +9,7 @@ const conditionalPlugins = isProd
 
 const entry = [
   require.resolve("webpack/hot/dev-server"),
-  path.resolve("./src/js/index.js")
+  path.resolve("./src/js/index.ts")
 ];
 
 export default {

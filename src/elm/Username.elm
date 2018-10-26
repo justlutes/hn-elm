@@ -24,7 +24,7 @@ decoder =
 
 
 
--- HELPERS
+-- TRANSFORM
 
 
 encode : Username -> Value

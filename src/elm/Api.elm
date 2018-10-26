@@ -8,6 +8,7 @@ import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Url exposing (Url)
 import Username exposing (Username)
+import Viewer exposing (Viewer)
 
 
 type Cred
@@ -43,14 +44,18 @@ decode decoder value =
 
 port onStoreChange : (Value -> msg) -> Sub msg
 
-viewerChanges = (Maybe viewer -> msg) -> Decoder (Cred -> viewer) -> Sub msg
+
+viewerChanges : (Maybe viewer -> msg) -> Decoder (Cred -> viewer) -> Sub msg
 viewerChanges toMsg decoder =
     onStoreChange (\value -> toMsg (decodeFromChange decoder value))
+
 
 decodeFromChange : Decoder (Cred -> viewer) -> Value -> Maybe Viewer
 decodeFromChange viewerDecoder val =
     Decode.decodeValue (storageDecoder viewerDecoder) val
         |> Result.toMaybe
+
+
 
 -- HELPERS
 

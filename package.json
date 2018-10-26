@@ -1,8 +1,13 @@
 {
   "name": "hn-elm",
+  "license": "MIT",
   "description": "Hackernews clone in Elm",
   "version": "1.0.0",
   "author": "Kyle Lutes <klutes90@gmail.com>",
+  "scripts": {
+    "build": "webpack",
+    "watch": "NODE_ENV=dev webpack-dev-server"
+  },
   "dependencies": {
     "firebase": "^5.5.5"
   },
@@ -11,7 +16,11 @@
     "elm-hot-webpack-loader": "^1.0.2",
     "elm-webpack-loader": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",
+    "ts-loader": "^5.2.2",
+    "tslint": "^5.11.0",
     "typescript": "^3.1.3",
-    "webpack": "^4.22.0"
+    "webpack": "^4.22.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   }
 }

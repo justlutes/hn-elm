@@ -1,45 +1,50 @@
-import webpack from "webpack";
-import HtmlWebpackPlugin from "html-webpack-plugin";
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+const fs = require("fs");
 
 const isProd = process.env.NODE_ENV !== "dev";
+const appRoot = fs.realpathSync(process.cwd());
 
 const conditionalPlugins = isProd
   ? [new webpack.optimize.ModuleConcatenationPlugin()]
   : [new webpack.HotModuleReplacementPlugin()];
 
-const entry = [
-  require.resolve("webpack/hot/dev-server"),
-  path.resolve("./src/js/index.ts")
-];
+const entry = isProd
+  ? [path.resolve(appRoot, "./src/js/index.ts")]
+  : [
+      require.resolve("webpack/hot/dev-server"),
+      path.resolve(appRoot, "./src/js/index.ts")
+    ];
 
-export default {
+module.exports = {
   entry,
   devtool: false,
+  mode: "development",
   output: {
     publicPath: "/",
     chunkFilename: "static/[name].bundle.js",
-    path: path.resolve("./dist"),
+    path: path.resolve(appRoot, "./dist"),
     filename: "static/main.[hash:8].js"
   },
 
-  plugins: [
-    ...conditionalPlugins,
+  plugins: conditionalPlugins.concat([
     new HtmlWebpackPlugin({
       inject: true,
-      template: path.resolve("./public/index.html")
+      template: path.resolve(appRoot, "./public/index.html")
     })
-  ],
+  ]),
 
   resolve: {
     modules: ["node_modules"],
-    extensions: [".ts", ".elm"]
+    extensions: [".js", ".ts", ".elm"]
   },
 
   module: {
     rules: [
       {
         test: /\.ts$/,
-        user: {
+        use: {
           loader: "ts-loader"
         }
       },

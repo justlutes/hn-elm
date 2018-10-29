@@ -1,4 +1,4 @@
-port module Api.Firebase exposing (requestNews, requestedNews)
+port module Api.Firebase exposing (PortMsg, requestTopStories, requestedTopStories)
 
 import Json.Decode exposing (Value)
 
@@ -11,9 +11,9 @@ type alias PortMsg =
 
 {-| Request all posts of type news
 -}
-port requestNews : PortMsg -> Cmd msg
+port requestTopStories : PortMsg -> Cmd msg
 
 
 {-| Receive all fetched news posts
 -}
-port requestedNews : (PortMsg -> msg) -> Sub msg
+port requestedTopStories : (PortMsg -> msg) -> Sub msg

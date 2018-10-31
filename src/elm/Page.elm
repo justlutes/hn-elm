@@ -26,8 +26,6 @@ type Page
     | Login
     | Register
     | Settings
-    | Profile Username
-    | NewArticle
 
 
 {-| Take a page's Html and frames it with a header and footer.
@@ -74,8 +72,7 @@ viewMenu page maybeViewer =
                 avatar =
                     Viewer.avatar viewer
             in
-            [ linkTo Route.NewArticle [ i [ class "ion-compose" ] [], text "\u{00A0}New Post" ]
-            , linkTo Route.Settings [ i [ class "ion-gear-a" ] [], text "\u{00A0}Settings" ]
+            [ linkTo Route.Settings [ i [ class "ion-gear-a" ] [], text "\u{00A0}Settings" ]
             , linkTo
                 (Route.Profile username)
                 [ img [ class "user-pic", Avatar.src avatar ] []
@@ -123,12 +120,6 @@ isActive page route =
             True
 
         ( Settings, Route.Settings ) ->
-            True
-
-        ( Profile pageUsername, Route.Profile routeUsername ) ->
-            pageUsername == routeUsername
-
-        ( NewArticle, Route.NewArticle ) ->
             True
 
         _ ->

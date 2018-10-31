@@ -1,6 +1,5 @@
-module Api.Endpoint exposing (Endpoint, article, articles, comment, comments, favorite, feed, follow, login, profiles, request, tags, user, users)
+module Api.Endpoint exposing (Endpoint, feed, follow, login, profiles, request, tags, user, users)
 
-import Article.Slug as Slug exposing (Slug)
 import CommentId exposing (CommentId)
 import Http
 import Url.Builder exposing (QueryParameter)
@@ -81,35 +80,6 @@ users =
 follow : Username -> Endpoint
 follow uname =
     url [ "profiles", Username.toString uname, "follow" ] []
-
-
-
--- ARTICLE ENDPOINTS
-
-
-article : Slug -> Endpoint
-article slug =
-    url [ "articles", Slug.toString slug ] []
-
-
-comments : Slug -> Endpoint
-comments slug =
-    url [ "articles", Slug.toString slug, "comments" ] []
-
-
-comment : Slug -> CommentId -> Endpoint
-comment slug commentId =
-    url [ "articles", Slug.toString slug, "comments", CommentId.toString commentId ] []
-
-
-favorite : Slug -> Endpoint
-favorite slug =
-    url [ "articles", Slug.toString slug, "favorite" ] []
-
-
-articles : List QueryParameter -> Endpoint
-articles params =
-    url [ "articles" ] params
 
 
 profiles : Username -> Endpoint

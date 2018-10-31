@@ -1,20 +1,16 @@
 module Main exposing (main)
 
 import Api exposing (Cred)
-import Article.Slug exposing (Slug)
 import Avatar exposing (Avatar)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Json.Decode as Decode exposing (Value)
 import Page exposing (Page)
-import Page.Article as Article
-import Page.Article.Editor as Editor
 import Page.Blank as Blank
 import Page.Home as Home
 import Page.Login as Login
 import Page.NotFound as NotFound
-import Page.Profile as Profile
 import Page.Register as Register
 import Page.Settings as Settings
 import Route exposing (Route)
@@ -24,6 +20,7 @@ import Time
 import Url exposing (Url)
 import Username exposing (Username)
 import Viewer exposing (Viewer)
+
 
 
 -- NOTE: Based on discussions around how asset management features
@@ -40,9 +37,6 @@ type Model
     | Settings Settings.Model
     | Login Login.Model
     | Register Register.Model
-    | Profile Username Profile.Model
-    | Article Article.Model
-    | Editor (Maybe Slug) Editor.Model
 
 
 
@@ -90,18 +84,6 @@ view model =
         Register register ->
             viewPage Page.Other GotRegisterMsg (Register.view register)
 
-        Profile username profile ->
-            viewPage (Page.Profile username) GotProfileMsg (Profile.view profile)
-
-        Article article ->
-            viewPage Page.Other GotArticleMsg (Article.view article)
-
-        Editor Nothing editor ->
-            viewPage Page.NewArticle GotEditorMsg (Editor.view editor)
-
-        Editor (Just _) editor ->
-            viewPage Page.Other GotEditorMsg (Editor.view editor)
-
 
 
 -- UPDATE
@@ -116,9 +98,6 @@ type Msg
     | GotSettingsMsg Settings.Msg
     | GotLoginMsg Login.Msg
     | GotRegisterMsg Register.Msg
-    | GotProfileMsg Profile.Msg
-    | GotArticleMsg Article.Msg
-    | GotEditorMsg Editor.Msg
     | GotSession Session
 
 
@@ -143,15 +122,6 @@ toSession page =
         Register register ->
             Register.toSession register
 
-        Profile _ profile ->
-            Profile.toSession profile
-
-        Article article ->
-            Article.toSession article
-
-        Editor _ editor ->
-            Editor.toSession editor
-
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
@@ -169,14 +139,6 @@ changeRouteTo maybeRoute model =
         Just Route.Logout ->
             ( model, Api.logout )
 
-        Just Route.NewArticle ->
-            Editor.initNew session
-                |> updateWith (Editor Nothing) GotEditorMsg model
-
-        Just (Route.EditArticle slug) ->
-            Editor.initEdit session slug
-                |> updateWith (Editor (Just slug)) GotEditorMsg model
-
         Just Route.Settings ->
             Settings.init session
                 |> updateWith Settings GotSettingsMsg model
@@ -193,14 +155,6 @@ changeRouteTo maybeRoute model =
             Register.init session
                 |> updateWith Register GotRegisterMsg model
 
-        Just (Route.Profile username) ->
-            Profile.init session username
-                |> updateWith (Profile username) GotProfileMsg model
-
-        Just (Route.Article slug) ->
-            Article.init session slug
-                |> updateWith Article GotArticleMsg model
-
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -213,14 +167,6 @@ update msg model =
                 Browser.Internal url ->
                     case url.fragment of
                         Nothing ->
-                            -- If we got a link that didn't include a fragment,
-                            -- it's from one of those (href "") attributes that
-                            -- we have to include to make the RealWorld CSS work.
-                            --
-                            -- In an application doing path routing instead of
-                            -- fragment-based routing, this entire
-                            -- `case url.fragment of` expression this comment
-                            -- is inside would be unnecessary.
                             ( model, Cmd.none )
 
                         Just _ ->
@@ -254,18 +200,6 @@ update msg model =
         ( GotHomeMsg subMsg, Home home ) ->
             Home.update subMsg home
                 |> updateWith Home GotHomeMsg model
-
-        ( GotProfileMsg subMsg, Profile username profile ) ->
-            Profile.update subMsg profile
-                |> updateWith (Profile username) GotProfileMsg model
-
-        ( GotArticleMsg subMsg, Article article ) ->
-            Article.update subMsg article
-                |> updateWith Article GotArticleMsg model
-
-        ( GotEditorMsg subMsg, Editor slug editor ) ->
-            Editor.update subMsg editor
-                |> updateWith (Editor slug) GotEditorMsg model
 
         ( GotSession session, Redirect _ ) ->
             ( Redirect session
@@ -308,15 +242,6 @@ subscriptions model =
 
         Register register ->
             Sub.map GotRegisterMsg (Register.subscriptions register)
-
-        Profile _ profile ->
-            Sub.map GotProfileMsg (Profile.subscriptions profile)
-
-        Article article ->
-            Sub.map GotArticleMsg (Article.subscriptions article)
-
-        Editor _ editor ->
-            Sub.map GotEditorMsg (Editor.subscriptions editor)
 
 
 

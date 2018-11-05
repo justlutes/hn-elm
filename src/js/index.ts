@@ -1,6 +1,6 @@
 import { IApp } from "./@types";
 import { Elm } from "../elm/Main.elm";
-import { getTopStories } from "./api";
+import { getTopStories, getNewStories, getBestStories } from "./api";
 
 const app: IApp = Elm.Main.init();
 

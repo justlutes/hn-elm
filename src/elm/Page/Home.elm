@@ -32,7 +32,7 @@ type alias Model =
     , feedPage : Int
 
     -- Loaded independently from server
-    , tags : Status (List Tag)
+    , tags : Status List Int
     , feed : Status Feed.Model
     }
 

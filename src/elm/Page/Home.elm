@@ -6,6 +6,7 @@ module Page.Home exposing (Model, Msg, init, subscriptions, toSession, update, v
 import Api exposing (Cred)
 import Api.Endpoint as Endpoint
 import Browser.Dom as Dom
+import Data.Feed as Feed
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, classList, href, id, placeholder)
 import Html.Events exposing (onClick)
@@ -32,7 +33,6 @@ type alias Model =
     , feedPage : Int
 
     -- Loaded independently from server
-    , tags : Status List Int
     , feed : Status Feed.Model
     }
 
@@ -47,7 +47,6 @@ type Status a
 type FeedTab
     = YourFeed Cred
     | GlobalFeed
-    | TagFeed Tag
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -60,22 +59,16 @@ init session =
 
                 Nothing ->
                     GlobalFeed
-
-        loadTags =
-            Http.toTask Tag.list
     in
     ( { session = session
       , timeZone = Time.utc
       , feedTab = feedTab
       , feedPage = 1
-      , tags = Loading
       , feed = Loading
       }
     , Cmd.batch
         [ fetchFeed session feedTab 1
             |> Task.attempt CompletedFeedLoad
-        , Tag.list
-            |> Http.send CompletedTagsLoad
         , Task.perform GotTimeZone Time.here
         , Task.perform (\_ -> PassedSlowLoadThreshold) Loading.slowThreshold
         ]
@@ -103,7 +96,7 @@ view model =
                                                 (Session.cred model.session)
                                                 model.feedTab
                                           ]
-                                        , Feed.viewArticles model.timeZone feed
+                                        , Feed.viewPosts model.timeZone feed
                                             |> List.map (Html.map GotFeedMsg)
                                         , [ Feed.viewPagination ClickedFeedPage model.feedPage feed ]
                                         ]
@@ -117,23 +110,6 @@ view model =
 
                             Failed ->
                                 [ Loading.error "feed" ]
-                    , div [ class "col-md-3" ] <|
-                        case model.tags of
-                            Loaded tags ->
-                                [ div [ class "sidebar" ] <|
-                                    [ p [] [ text "Popular Tags" ]
-                                    , viewTags tags
-                                    ]
-                                ]
-
-                            Loading ->
-                                []
-
-                            LoadingSlowly ->
-                                [ Loading.icon ]
-
-                            Failed ->
-                                [ Loading.error "tags" ]
                     ]
                 ]
             ]
@@ -172,18 +148,6 @@ viewTabs maybeCred tab =
             in
             Feed.viewTabs otherTabs globalFeed []
 
-        TagFeed tag ->
-            let
-                otherTabs =
-                    case maybeCred of
-                        Just cred ->
-                            [ yourFeed cred, globalFeed ]
-
-                        Nothing ->
-                            [ globalFeed ]
-            in
-            Feed.viewTabs otherTabs (tagFeed tag) []
-
 
 yourFeed : Cred -> ( String, Msg )
 yourFeed cred =
@@ -195,42 +159,14 @@ globalFeed =
     ( "Global Feed", ClickedTab GlobalFeed )
 
 
-tagFeed : Tag -> ( String, Msg )
-tagFeed tag =
-    ( "#" ++ Tag.toString tag, ClickedTab (TagFeed tag) )
-
-
-
--- TAGS
-
-
-viewTags : List Tag -> Html Msg
-viewTags tags =
-    div [ class "tag-list" ] (List.map viewTag tags)
-
-
-viewTag : Tag -> Html Msg
-viewTag tagName =
-    a
-        [ class "tag-pill tag-default"
-        , onClick (ClickedTag tagName)
-
-        -- The RealWorld CSS requires an href to work properly.
-        , href ""
-        ]
-        [ text (Tag.toString tagName) ]
-
-
 
 -- UPDATE
 
 
 type Msg
-    = ClickedTag Tag
-    | ClickedTab FeedTab
+    = ClickedTab FeedTab
     | ClickedFeedPage Int
     | CompletedFeedLoad (Result Http.Error Feed.Model)
-    | CompletedTagsLoad (Result Http.Error (List Tag))
     | GotTimeZone Time.Zone
     | GotFeedMsg Feed.Msg
     | GotSession Session
@@ -240,16 +176,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ClickedTag tag ->
-            let
-                feedTab =
-                    TagFeed tag
-            in
-            ( { model | feedTab = feedTab }
-            , fetchFeed model.session feedTab 1
-                |> Task.attempt CompletedFeedLoad
-            )
-
         ClickedTab tab ->
             ( { model | feedTab = tab }
             , fetchFeed model.session tab 1
@@ -269,20 +195,12 @@ update msg model =
         CompletedFeedLoad (Err error) ->
             ( { model | feed = Failed }, Cmd.none )
 
-        CompletedTagsLoad (Ok tags) ->
-            ( { model | tags = Loaded tags }, Cmd.none )
-
-        CompletedTagsLoad (Err error) ->
-            ( { model | tags = Failed }
-            , Log.error
-            )
-
         GotFeedMsg subMsg ->
             case model.feed of
                 Loaded feed ->
                     let
                         ( newFeed, subCmd ) =
-                            Feed.update (Session.cred model.session) subMsg feed
+                            Feed.update subMsg feed
                     in
                     ( { model | feed = Loaded newFeed }
                     , Cmd.map GotFeedMsg subCmd
@@ -314,16 +232,8 @@ update msg model =
 
                         other ->
                             other
-
-                tags =
-                    case model.tags of
-                        Loading ->
-                            LoadingSlowly
-
-                        other ->
-                            other
             in
-            ( { model | feed = feed, tags = tags }, Cmd.none )
+            ( { model | feed = feed }, Cmd.none )
 
 
 
@@ -337,7 +247,7 @@ fetchFeed session feedTabs page =
             Session.cred session
 
         decoder =
-            Feed.decoder maybeCred articlesPerPage
+            Feed.decoder articlesPerPage
 
         params =
             PaginatedList.params { page = page, resultsPerPage = articlesPerPage }
@@ -348,14 +258,8 @@ fetchFeed session feedTabs page =
                     Api.get (Endpoint.feed params) maybeCred decoder
 
                 GlobalFeed ->
-                    Api.get (Endpoint.articles params) maybeCred decoder
-
-                TagFeed tag ->
-                    let
-                        firstParam =
-                            Url.Builder.string "tag" (Tag.toString tag)
-                    in
-                    Api.get (Endpoint.articles (firstParam :: params)) maybeCred decoder
+                    -- Api.get (Endpoint.articles params) maybeCred decoder
+                    Api.get (Endpoint.feed params) maybeCred decoder
     in
     Http.toTask request
         |> Task.map (Feed.init session)

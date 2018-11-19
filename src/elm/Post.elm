@@ -1,4 +1,4 @@
-module Post exposing (Post, author, detailsDecoder, metadata)
+module Post exposing (Post, author, detailsDecoder, metadata, postDecoder)
 
 import Iso8601
 import Json.Decode as Decode exposing (Decoder)
@@ -6,8 +6,8 @@ import Json.Decode.Pipeline exposing (custom, optional, required)
 import Time
 
 
-type Post a
-    = Post Details a
+type Post
+    = Post Details
 
 
 type Type
@@ -45,8 +45,8 @@ type alias Metadata =
 -- INFO
 
 
-author : Post a -> String
-author (Post details _) =
+author : Post -> String
+author (Post details) =
     case details.metadata.by of
         Nothing ->
             "Anonymous"
@@ -55,13 +55,19 @@ author (Post details _) =
             by
 
 
-metadata : Post a -> Metadata
-metadata (Post details _) =
+metadata : Post -> Metadata
+metadata (Post details) =
     details.metadata
 
 
 
 -- SERIALIZATION
+
+
+postDecoder : Decoder Post
+postDecoder =
+    Decode.succeed Post
+        |> custom detailsDecoder
 
 
 detailsDecoder : Decoder Details

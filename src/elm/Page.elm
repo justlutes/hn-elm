@@ -73,8 +73,7 @@ viewMenu page maybeViewer =
                     Viewer.avatar viewer
             in
             [ linkTo Route.Settings [ i [ class "ion-gear-a" ] [], text "\u{00A0}Settings" ]
-            , linkTo
-                (Route.Profile username)
+            , div []
                 [ img [ class "user-pic", Avatar.src avatar ] []
                 , Username.toHtml username
                 ]

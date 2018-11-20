@@ -3,7 +3,7 @@ module Page exposing (Page(..), view, viewErrors)
 import Api exposing (Cred)
 import Avatar
 import Browser exposing (Document)
-import Html exposing (Html, a, button, div, footer, i, img, li, nav, p, span, text, ul)
+import Html exposing (Html, a, button, div, footer, i, img, li, nav, node, p, span, text, ul)
 import Html.Attributes exposing (class, classList, href, style)
 import Html.Events exposing (onClick)
 import Profile
@@ -90,7 +90,8 @@ viewFooter : Html msg
 viewFooter =
     footer []
         [ div [ class "container" ]
-            [ a [ class "logo-font", href "/" ] [ text "conduit" ]
+            [ node "custom-element-test" [] []
+            , a [ class "logo-font", href "/" ] [ text "conduit" ]
             , span [ class "attribution" ]
                 [ text "An interactive learning project from "
                 , a [ href "https://thinkster.io" ] [ text "Thinkster" ]

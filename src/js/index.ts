@@ -1,7 +1,7 @@
 import { IApp } from './@types';
 import { Elm } from '../elm/Main.elm';
-import { getTopStories, getNewStories, getBestStories } from './api';
-import './custom_element_test';
+import { getTopStories } from './api';
+import './components';
 
 const app: IApp = Elm.Main.init();
 

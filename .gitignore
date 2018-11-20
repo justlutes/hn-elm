@@ -4,3 +4,4 @@ elm-stuff/
 firebase-debug.log
 .firebaserc
 yarn-error.log
+dist/

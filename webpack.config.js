@@ -1,43 +1,42 @@
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
-const fs = require("fs");
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const fs = require('fs');
 
-const isProd = process.env.NODE_ENV !== "dev";
+const MODE = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
 const appRoot = fs.realpathSync(process.cwd());
 
-const conditionalPlugins = isProd
-  ? [new webpack.optimize.ModuleConcatenationPlugin()]
-  : [new webpack.HotModuleReplacementPlugin()];
+const conditionalPlugins =
+  MODE === 'production'
+    ? [new webpack.optimize.ModuleConcatenationPlugin()]
+    : [new webpack.HotModuleReplacementPlugin()];
 
-const entry = isProd
-  ? [path.resolve(appRoot, "./src/js/index.ts")]
-  : [
-      require.resolve("webpack/hot/dev-server"),
-      path.resolve(appRoot, "./src/js/index.ts")
-    ];
+const entry =
+  MODE === 'production'
+    ? [path.resolve(appRoot, './src/js/index.ts')]
+    : [require.resolve('webpack/hot/dev-server'), path.resolve(appRoot, './src/js/index.ts')];
 
 module.exports = {
   entry,
   devtool: false,
-  mode: "development",
+  mode: MODE,
   output: {
-    publicPath: "/",
-    chunkFilename: "static/[name].bundle.js",
-    path: path.resolve(appRoot, "./dist"),
-    filename: "static/main.[hash:8].js"
+    publicPath: '/',
+    chunkFilename: 'static/[name].bundle.js',
+    path: path.resolve(appRoot, './dist'),
+    filename: 'static/main.[hash:8].js',
   },
 
   plugins: conditionalPlugins.concat([
     new HtmlWebpackPlugin({
       inject: true,
-      template: path.resolve(appRoot, "./public/index.html")
-    })
+      template: path.resolve(appRoot, './public/index.html'),
+    }),
   ]),
 
   resolve: {
-    modules: ["node_modules"],
-    extensions: [".js", ".ts", ".elm"]
+    modules: ['node_modules'],
+    extensions: ['.js', '.ts', '.elm'],
   },
 
   module: {
@@ -45,35 +44,36 @@ module.exports = {
       {
         test: /\.ts$/,
         use: {
-          loader: "ts-loader"
-        }
+          loader: 'ts-loader',
+        },
       },
       {
         test: /\.elm$/,
         exclude: /(node_modules|elm-stuff)/,
-        use: isProd
-          ? [
-              {
-                loader: "elm-webpack-loader",
-                options: {
-                  cwd: __dirname,
-                  runtimeOptions: "-A128m -H128m -n8m",
-                  optimize: true
-                }
-              }
-            ]
-          : [
-              { loader: "elm-hot-webpack-loader" },
-              {
-                loader: "elm-webpack-loader",
-                options: {
-                  cwd: __dirname,
-                  runtimeOptions: "-A128m -H128m -n8m",
-                  debug: true
-                }
-              }
-            ]
-      }
-    ]
-  }
+        use:
+          MODE === 'production'
+            ? [
+                {
+                  loader: 'elm-webpack-loader',
+                  options: {
+                    cwd: __dirname,
+                    runtimeOptions: '-A128m -H128m -n8m',
+                    optimize: true,
+                  },
+                },
+              ]
+            : [
+                { loader: 'elm-hot-webpack-loader' },
+                {
+                  loader: 'elm-webpack-loader',
+                  options: {
+                    cwd: __dirname,
+                    runtimeOptions: '-A128m -H128m -n8m',
+                    debug: true,
+                  },
+                },
+              ],
+      },
+    ],
+  },
 };

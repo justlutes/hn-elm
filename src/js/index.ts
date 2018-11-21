@@ -1,13 +1,23 @@
-import { IApp } from './@types';
-import { Elm } from '../elm/Main.elm';
+import { Elm } from '../elm/Main';
 import { getTopStories } from './api';
 import initializeComponents from './components';
 
-const app: IApp = Elm.Main.init();
-initializeComponents(app);
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('test');
+  const app: Elm.Main.App = Elm.Main.init({
+    flags: null,
+  });
 
-app.ports.requestTopStories.subscribe(async (value: any) => {
-  const topStories = await getTopStories();
+  console.log(app);
 
-  app.ports.requestedTopStories.send(topStories);
+  initializeComponents(app);
+  // app.ports.initialize.subscribe(() => console.log('initialized'));
 });
+// const app: IApp = Elm.Main.init();
+// initializeComponents(app);
+
+// app.ports.requestTopStories.subscribe(async (value: any) => {
+//   const topStories = await getTopStories();
+
+//   app.ports.requestedTopStories.send(topStories);
+// });

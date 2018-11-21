@@ -5,8 +5,8 @@
   "version": "1.0.0",
   "author": "Kyle Lutes <klutes90@gmail.com>",
   "scripts": {
-    "build": "elm-typescript-interop && webpack",
-    "start": "yarn run watch",
+    "build": "webpack -p",
+    "start": "elm-typescript-interop && yarn run watch",
     "watch": "NODE_ENV=dev webpack-dev-server"
   },
   "dependencies": {

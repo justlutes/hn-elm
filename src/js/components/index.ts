@@ -1,1 +1,4 @@
-export * from './custom_element_test';
+import { IApp } from '../@types';
+import './custom_element_test';
+
+export default (app: IApp) => {};

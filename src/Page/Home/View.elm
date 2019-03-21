@@ -6,7 +6,7 @@ import Page.Home.Types exposing (..)
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    { title = "hn-elm"
+    { title = "News"
     , content =
         Html.div []
             [ Html.text "Home page" ]

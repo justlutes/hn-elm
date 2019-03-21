@@ -3,7 +3,6 @@ module Post exposing (Post, author, detailsDecoder, metadata, postDecoder)
 import Iso8601
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
-import Time
 
 
 type Post
@@ -28,7 +27,7 @@ type alias Metadata =
     , deleted : Maybe Bool
     , type_ : Maybe Type
     , by : Maybe String
-    , time : Maybe Time.Posix
+    , time : Maybe Int
     , text : Maybe String
     , parent : Maybe Int
     , poll : Maybe Int
@@ -83,7 +82,7 @@ metadataDecoder =
         |> optional "deleted" (Decode.nullable Decode.bool) Nothing
         |> optional "type" (Decode.nullable decodeType) Nothing
         |> optional "by" (Decode.nullable Decode.string) Nothing
-        |> optional "time" (Decode.nullable Iso8601.decoder) Nothing
+        |> optional "time" (Decode.nullable Decode.int) Nothing
         |> optional "text" (Decode.nullable Decode.string) Nothing
         |> optional "parent" (Decode.nullable Decode.int) Nothing
         |> optional "poll" (Decode.nullable Decode.int) Nothing

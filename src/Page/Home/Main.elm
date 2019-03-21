@@ -1,5 +1,6 @@
 module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Firebase as Firebase
 import Html exposing (Html)
 import Page.Home.Types exposing (..)
 import Page.Home.View as View
@@ -12,8 +13,10 @@ type alias Model =
 
 init : Session -> ( Model, Cmd Msg )
 init session =
-    ( { session = session }
-    , Cmd.none
+    ( { session = session
+      , posts = Loading
+      }
+    , Firebase.initialize ""
     )
 
 
@@ -32,12 +35,7 @@ type alias Msg =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
-        GotSession session ->
-            ( { model | session = session }, Cmd.none )
+    Page.Home.Types.update msg model
 
 
 toSession : Model -> Session
@@ -47,4 +45,7 @@ toSession =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.batch
+        [ Session.changes GotSession (Session.navKey model.session)
+        , Firebase.inBoundPosts CompletedPostsLoad PortFailure
+        ]

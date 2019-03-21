@@ -1,4 +1,3 @@
-//test
 import { Elm } from './Main';
 
 // import { getTopStories } from './api';

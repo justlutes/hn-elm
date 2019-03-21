@@ -13,7 +13,10 @@ export namespace Elm {
           subscribe(callback: (data: { category: string }) => void): void
         }
         requestedPosts: {
-          send(data: { category: string }): void
+          send(data: any): void
+        }
+        testing: {
+          subscribe(callback: (data: any) => void): void
         }
       };
     }

@@ -19,4 +19,7 @@ port requestPosts : PortMsg -> Cmd msg
 
 {-| Receive all fetched news posts
 -}
-port requestedPosts : (PortMsg -> msg) -> Sub msg
+port requestedPosts : (Json.Decode.Value -> msg) -> Sub msg
+
+
+port testing : Json.Decode.Value -> Cmd msg

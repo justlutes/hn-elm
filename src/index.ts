@@ -1,16 +1,14 @@
-import { Elm } from '../elm/Main';
-import { getTopStories } from './api';
-import initializeComponents from './components';
+import { Elm } from './Main';
+
+// import { getTopStories } from './api';
+// import initializeComponents from './components';
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('test');
   const app: Elm.Main.App = Elm.Main.init({
-    flags: null,
+    flags: 1,
   });
 
-  console.log(app);
-
-  initializeComponents(app);
+  // initializeComponents(app);
   // app.ports.initialize.subscribe(() => console.log('initialized'));
 });
 // const app: IApp = Elm.Main.init();

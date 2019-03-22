@@ -1,9 +1,9 @@
 port module Firebase exposing (PortMsg, inBoundPosts, initialize, requestPosts, requestedPosts)
 
+import Data.Post as Post exposing (Post)
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
 import Json.Encode
-import Post exposing (Post)
 
 
 type alias PortMsg =

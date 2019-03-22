@@ -28,7 +28,7 @@ var common = {
   ],
   resolve: {
     modules: [path.join(__dirname, 'src'), 'node_modules'],
-    extensions: ['.js', '.ts', '.elm', '.scss', '.png'],
+    extensions: ['.js', '.ts', '.elm', '.scss'],
   },
   module: {
     rules: [
@@ -59,12 +59,18 @@ var common = {
         },
       },
       {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.svg$/,
+        use: {
+          loader: 'svg-inline-loader',
+        },
+      },
+      {
+        test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         exclude: [/elm-stuff/, /node_modules/],
         loader: 'file-loader',
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i,
+        test: /\.(jpe?g|png|gif)$/i,
         exclude: [/elm-stuff/, /node_modules/],
         loader: 'file-loader',
       },

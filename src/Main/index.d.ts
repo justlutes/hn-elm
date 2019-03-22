@@ -15,9 +15,6 @@ export namespace Elm {
         requestedPosts: {
           send(data: any): void
         }
-        testing: {
-          subscribe(callback: (data: any) => void): void
-        }
       };
     }
     export function init(options: {

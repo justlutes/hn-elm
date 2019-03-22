@@ -16,7 +16,7 @@ type Page
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =
     { title = title ++ " - HN"
-    , body = viewHeader page :: content :: [ viewFooter ]
+    , body = viewHeader page :: Html.node "hn-icon-sprites" [] [] :: content :: [ viewFooter ]
     }
 
 

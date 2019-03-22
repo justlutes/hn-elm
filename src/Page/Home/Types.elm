@@ -1,12 +1,12 @@
 module Page.Home.Types exposing (Model, Msg(..), Status(..), toSession, update)
 
 import Browser.Dom as Dom
+import Data.Post as Post exposing (Post)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
 import Http
 import Page
-import Post as Post exposing (Post)
 import Session exposing (Session)
 
 
@@ -40,14 +40,11 @@ update msg model =
             ( { model | session = session }, Cmd.none )
 
         CompletedPostsLoad posts ->
-            let
-                test =
-                    Debug.log "test" <| List.head posts
-            in
-            ( { model | posts = Loaded posts }
-            , Cmd.none
-            )
+            ( model, Cmd.none )
 
+        -- ( { model | posts = Loaded posts }
+        -- , Cmd.none
+        -- )
         PortFailure err ->
             ( model, Cmd.none )
 

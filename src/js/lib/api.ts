@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app';
 import 'firebase/database';
-import { Item } from './@types';
+import { Item } from '../@types';
 
 firebase.initializeApp({
   databaseURL: 'https://hacker-news.firebaseio.com',

@@ -1,6 +1,6 @@
 module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Firebase as Firebase
+import Data.Firebase as Firebase
 import Html exposing (Html)
 import Page.Home.Types exposing (..)
 import Page.Home.View as View
@@ -16,7 +16,7 @@ init session =
     ( { session = session
       , posts = Loading
       }
-    , Firebase.initialize ""
+    , Firebase.requestPosts Firebase.Top Nothing
     )
 
 

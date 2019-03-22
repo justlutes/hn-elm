@@ -1,6 +1,5 @@
 import { Elm } from './Main';
 import './css/styles.css';
-import { getTopStories } from './js/api';
 import initializeComponents from './js/components';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -9,10 +8,4 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   initializeComponents(app);
-
-  app.ports.initialize.subscribe(async (value: string) => {
-    const posts = await getTopStories();
-
-    app.ports.requestedPosts.send({ posts });
-  });
 });

@@ -1,6 +1,7 @@
 module Page.Home.Types exposing (Model, Msg(..), Status(..), toSession, update)
 
 import Browser.Dom as Dom
+import Data.Firebase as Firebase
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
 import Html.Attributes
@@ -28,6 +29,7 @@ type Msg
     | GotSession Session
     | CompletedPostsLoad (List Post)
     | PortFailure String
+    | LoadMore
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -40,11 +42,15 @@ update msg model =
             ( { model | session = session }, Cmd.none )
 
         CompletedPostsLoad posts ->
-            ( model, Cmd.none )
+            ( { model | posts = Loaded posts }
+            , Cmd.none
+            )
 
-        -- ( { model | posts = Loaded posts }
-        -- , Cmd.none
-        -- )
+        LoadMore ->
+            ( model
+            , Firebase.requestPosts Firebase.Top Nothing
+            )
+
         PortFailure err ->
             ( model, Cmd.none )
 

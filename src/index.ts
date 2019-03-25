@@ -1,5 +1,5 @@
 import { Elm } from './Main';
-import './css/styles.css';
+import './css/styles.scss';
 import initializeComponents from './js/components';
 
 document.addEventListener('DOMContentLoaded', function() {

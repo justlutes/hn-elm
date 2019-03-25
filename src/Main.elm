@@ -99,6 +99,18 @@ changeRouteTo maybeRoute model =
             Home.init session
                 |> updateWith Home HomeMsg model
 
+        Just Route.Ask ->
+            ( NotFound session, Cmd.none )
+
+        Just Route.Show ->
+            ( NotFound session, Cmd.none )
+
+        Just Route.New ->
+            ( NotFound session, Cmd.none )
+
+        Just Route.Jobs ->
+            ( NotFound session, Cmd.none )
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =

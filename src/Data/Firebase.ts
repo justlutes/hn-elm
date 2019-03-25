@@ -26,9 +26,9 @@ export default function(app: Elm.Main.App) {
 
       if (cursor) {
         const lastIndex = posts.findIndex(post => post.id === cursor);
-        posts = posts.slice(lastIndex + 1, lastIndex + 50);
+        posts = posts.slice(lastIndex + 1, lastIndex + 40);
       } else {
-        posts = posts.slice(0, 50);
+        posts = posts.slice(0, 40);
       }
       const newCursor = posts[posts.length - 1].id;
 

@@ -3,15 +3,18 @@ module Page.Home.View exposing (view)
 import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
+import Html.Attributes as Attributes
 import Html.Events as Events
+import Html.Keyed as Keyed
 import Page.Home.Types exposing (..)
 import Ui.Loading.Main as UiLoading
+import Ui.Post as Post
 
 
 view : Model -> { title : String, content : Html Msg }
 view model =
     { title = "News"
-    , content = viewContent model
+    , content = Html.div [ Attributes.class "content-wrapper" ] [ viewContent model ]
     }
 
 
@@ -19,27 +22,13 @@ viewContent : Model -> Html Msg
 viewContent model =
     case model.posts of
         Loaded { posts } ->
-            Html.div []
-                [ Html.div []
-                    [ Html.button [ Events.onClick LoadMore ] [ Html.text "Load" ] ]
-                , Html.div [] <| List.map viewPosts posts
-                ]
+            Keyed.node "ol" [ Attributes.class "post-list" ] <| List.map Post.view posts
 
         Loading ->
-            UiLoading.view { color = "blue", size = 30 }
+            UiLoading.view { color = "#60b5cc", size = 30 }
 
         LoadingSlowly ->
             UiLoading.view { color = "yellow", size = 30 }
 
         Failed ->
             Html.div [] [ Html.text "Error loading posts" ]
-
-
-viewPosts : Post -> Html Msg
-viewPosts post =
-    let
-        metadata =
-            Post.metadata post
-    in
-    Html.div []
-        [ Html.text <| String.fromInt metadata.id ]

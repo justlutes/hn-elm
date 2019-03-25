@@ -1,4 +1,4 @@
-module Data.Post exposing (Post, author, detailsDecoder, metadata, postDecoder)
+module Data.Post exposing (Post, author, detailsDecoder, metadata, postDecoder, url)
 
 import Iso8601
 import Json.Decode as Decode exposing (Decoder)
@@ -57,6 +57,11 @@ author (Post details) =
 metadata : Post -> Metadata
 metadata (Post details) =
     details.metadata
+
+
+url : Post -> Maybe String
+url (Post details) =
+    details.metadata.url
 
 
 

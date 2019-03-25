@@ -43,10 +43,6 @@ update msg model =
             ( { model | session = session }, Cmd.none )
 
         CompletedPostsLoad posts ->
-            let
-                test =
-                    Debug.log "posts" posts
-            in
             ( { model | posts = Loaded posts }
             , Cmd.none
             )

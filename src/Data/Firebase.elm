@@ -1,5 +1,6 @@
-port module Data.Firebase exposing (Category(..), inBoundPosts, requestPosts, requestedPosts)
+port module Data.Firebase exposing (Category(..), Config, inBoundPosts, requestPosts, requestedPosts)
 
+import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
@@ -12,6 +13,12 @@ type Category
     | Top
 
 
+type alias Config msg =
+    { onPosts : Feed -> msg
+    , onFailure : String -> msg
+    }
+
+
 port firebaseOutbound : Decode.Value -> Cmd msg
 
 
@@ -22,8 +29,8 @@ requestPosts category maybeCursor =
             [ ( "category", Encode.string <| categoryToString category )
             , ( "cursor"
               , case maybeCursor of
-                    Just c ->
-                        Encode.int c
+                    Just cursor ->
+                        Encode.int cursor
 
                     Nothing ->
                         Encode.null
@@ -36,13 +43,14 @@ requestPosts category maybeCursor =
 port requestedPosts : (Decode.Value -> msg) -> Sub msg
 
 
-inBoundPosts : (List Post -> msg) -> (String -> msg) -> Sub msg
-inBoundPosts onPosts onFailure =
+inBoundPosts : Config msg -> Sub msg
+inBoundPosts config =
     let
         postDecoder =
-            Decode.succeed onPosts
-                -- |> Decode.required "cursor" Decode.int
+            Decode.succeed Feed
+                |> Decode.optional "cursor" (Decode.nullable Decode.int) Nothing
                 |> Decode.required "posts" (Decode.list Post.postDecoder)
+                |> Decode.map config.onPosts
     in
     requestedPosts <|
         \value ->
@@ -51,7 +59,7 @@ inBoundPosts onPosts onFailure =
                     msg
 
                 Err e ->
-                    onFailure <| Decode.errorToString e
+                    config.onFailure <| Decode.errorToString e
 
 
 

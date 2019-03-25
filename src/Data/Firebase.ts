@@ -7,8 +7,8 @@ type Category = 'top' | 'new' | 'best';
 export default function(app: Elm.Main.App) {
   app.ports.firebaseOutbound.subscribe(
     async ({ category, cursor }: { category: Category; cursor?: number }) => {
-      console.log(category, cursor);
       let posts: Item[];
+
       switch (category) {
         case 'best':
           posts = await getBestStories();
@@ -24,7 +24,15 @@ export default function(app: Elm.Main.App) {
           break;
       }
 
-      app.ports.requestedPosts.send({ posts });
+      if (cursor) {
+        const lastIndex = posts.findIndex(post => post.id === cursor);
+        posts = posts.slice(lastIndex + 1, lastIndex + 50);
+      } else {
+        posts = posts.slice(0, 50);
+      }
+      const newCursor = posts[posts.length - 1].id;
+
+      app.ports.requestedPosts.send({ cursor: newCursor, posts });
     },
   );
 }

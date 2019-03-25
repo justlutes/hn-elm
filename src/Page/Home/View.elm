@@ -1,5 +1,6 @@
 module Page.Home.View exposing (view)
 
+import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
 import Html.Events as Events
@@ -17,7 +18,7 @@ view model =
 viewContent : Model -> Html Msg
 viewContent model =
     case model.posts of
-        Loaded posts ->
+        Loaded { posts } ->
             Html.div []
                 [ Html.div []
                     [ Html.button [ Events.onClick LoadMore ] [ Html.text "Load" ] ]

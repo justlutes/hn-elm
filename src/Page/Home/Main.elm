@@ -47,5 +47,5 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Session.changes GotSession (Session.navKey model.session)
-        , Firebase.inBoundPosts CompletedPostsLoad PortFailure
+        , Firebase.inBoundPosts { onPosts = CompletedPostsLoad, onFailure = PortFailure }
         ]

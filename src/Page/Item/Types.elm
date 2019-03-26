@@ -1,4 +1,4 @@
-module Page.Home.Types exposing (Model, Msg(..), Status(..), toSession, update)
+module Page.Item.Types exposing (Model, Msg(..), Status(..), toSession, update)
 
 import Browser.Dom as Dom
 import Data.Feed as Feed exposing (Feed)

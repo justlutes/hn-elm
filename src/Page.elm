@@ -4,7 +4,7 @@ import Browser exposing (Document)
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
-import Route as Route
+import Route as Route exposing (Route)
 import Session exposing (Session)
 
 
@@ -15,12 +15,13 @@ type Page
     | Show
     | Ask
     | Jobs
+    | Item
 
 
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =
     { title = title ++ " - HN"
-    , body = viewHeader page :: Html.node "hn-icon-sprites" [] [] :: content :: [ viewFooter ]
+    , body = viewHeader page :: Html.node "hn-icon-sprites" [] [] :: content :: [ viewFooter page ]
     }
 
 
@@ -36,38 +37,59 @@ viewHeader page =
 viewMenu : Page -> Html msg
 viewMenu page =
     Html.ul [ Attributes.class "nav-menu" ]
-        [ Html.a
-            [ Route.href Route.Home
-            , Attributes.classList [ ( "active", page == Home ) ]
-            ]
-            [ Html.text "top" ]
-        , Html.a
-            [ Route.href Route.New
-            , Attributes.classList [ ( "active", page == New ) ]
-            ]
-            [ Html.text "new" ]
-        , Html.a
-            [ Route.href Route.Show
-            , Attributes.classList [ ( "active", page == Other ) ]
-            ]
-            [ Html.text "show" ]
-        , Html.a
-            [ Route.href Route.Ask
-            , Attributes.classList [ ( "active", page == Ask ) ]
-            ]
-            [ Html.text "ask" ]
-        , Html.a
-            [ Route.href Route.Jobs
-            , Attributes.classList [ ( "active", page == Jobs ) ]
-            ]
-            [ Html.text "jobs" ]
+        [ navLink page Route.Home [ Html.text "top" ]
+        , navLink page Route.New [ Html.text "new" ]
+        , navLink page Route.Show [ Html.text "show" ]
+        , navLink page Route.Ask [ Html.text "ask" ]
+        , navLink page Route.Jobs [ Html.text "jobs" ]
         ]
 
 
-viewFooter : Html msg
-viewFooter =
+navLink : Page -> Route -> List (Html msg) -> Html msg
+navLink page route innerContent =
+    Html.li []
+        [ Html.a
+            [ Route.href route
+            , Attributes.classList [ ( "active", isActive page route ) ]
+            ]
+            innerContent
+        ]
+
+
+isActive : Page -> Route -> Bool
+isActive page route =
+    case ( page, route ) of
+        ( Home, Route.Home ) ->
+            True
+
+        ( New, Route.New ) ->
+            True
+
+        ( Show, Route.Show ) ->
+            True
+
+        ( Ask, Route.Ask ) ->
+            True
+
+        ( Jobs, Route.Jobs ) ->
+            True
+
+        _ ->
+            False
+
+
+viewFooter : Page -> Html msg
+viewFooter page =
     Html.footer []
-        [ Html.text "Hackernews - in Elm" ]
+        [ Html.span [] [ Html.text "Hackernews - in Elm" ]
+        , Html.ul []
+            [ navLink page Route.Home [ Html.text "top" ]
+            , navLink page Route.New [ Html.text "new" ]
+            , navLink page Route.Show [ Html.text "show" ]
+            , navLink page Route.Ask [ Html.text "ask" ]
+            , navLink page Route.Jobs [ Html.text "jobs" ]
+            ]
+        ]
 
 
 viewErrors : msg -> List String -> Html msg

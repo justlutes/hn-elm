@@ -4,7 +4,7 @@ import Browser.Navigation as Nav
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
+import Url.Parser as Parser exposing ((</>), Parser, int, oneOf, s, string)
 
 
 type Route
@@ -14,6 +14,7 @@ type Route
     | Show
     | Ask
     | Jobs
+    | Item Int
 
 
 parser : Parser (Route -> a) a
@@ -24,6 +25,7 @@ parser =
         , Parser.map Show (s "show")
         , Parser.map Ask (s "ask")
         , Parser.map Jobs (s "jobs")
+        , Parser.map Item (s "item" </> int)
         ]
 
 
@@ -73,5 +75,8 @@ routeToString route =
 
                 Jobs ->
                     [ "jobs" ]
+
+                Item id ->
+                    [ "item", String.fromInt id ]
     in
     "#/" ++ String.join "/" pieces

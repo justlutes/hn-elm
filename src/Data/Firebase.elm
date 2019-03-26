@@ -1,4 +1,4 @@
-port module Data.Firebase exposing (Category(..), Config, inBoundPosts, requestPosts, requestedPosts)
+port module Data.Firebase exposing (Category(..), Config, inBoundPosts, requestComments, requestPosts, requestedPosts)
 
 import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
@@ -11,6 +11,7 @@ type Category
     = Best
     | New
     | Top
+    | Comment
 
 
 type alias Config msg =
@@ -35,6 +36,15 @@ requestPosts category maybeCursor =
                     Nothing ->
                         Encode.null
               )
+            ]
+
+
+requestComments : Int -> Cmd msg
+requestComments parentId =
+    firebaseOutbound <|
+        Encode.object
+            [ ( "category", Encode.string <| categoryToString Comment )
+            , ( "parentId", Encode.string <| String.fromInt parentId )
             ]
 
 
@@ -77,3 +87,6 @@ categoryToString category =
 
         Top ->
             "top"
+
+        Comment ->
+            "comment"

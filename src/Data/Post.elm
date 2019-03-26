@@ -1,8 +1,8 @@
-module Data.Post exposing (Post, author, detailsDecoder, metadata, postDecoder, url)
+module Data.Post exposing (Post, author, detailsDecoder, metadata, postDecoder, time, url)
 
-import Iso8601
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
+import Time exposing (Posix)
 
 
 type Post
@@ -24,19 +24,19 @@ type alias Details =
 
 type alias Metadata =
     { id : Int
-    , deleted : Maybe Bool
+    , deleted : Bool
     , type_ : Maybe Type
-    , by : Maybe String
-    , time : Maybe Int
-    , text : Maybe String
+    , by : String
+    , time : Int
+    , text : String
     , parent : Maybe Int
     , poll : Maybe Int
     , kids : List Int
     , url : Maybe String
-    , score : Maybe Int
-    , title : Maybe String
+    , score : Int
+    , title : String
     , parts : List Int
-    , descendants : Maybe Int
+    , descendants : Int
     }
 
 
@@ -46,12 +46,7 @@ type alias Metadata =
 
 author : Post -> String
 author (Post details) =
-    case details.metadata.by of
-        Nothing ->
-            "Anonymous"
-
-        Just by ->
-            by
+    details.metadata.by
 
 
 metadata : Post -> Metadata
@@ -62,6 +57,11 @@ metadata (Post details) =
 url : Post -> Maybe String
 url (Post details) =
     details.metadata.url
+
+
+time : Post -> Int
+time (Post details) =
+    Time.toHour Time.utc <| Time.millisToPosix details.metadata.time
 
 
 
@@ -84,19 +84,19 @@ metadataDecoder : Decoder Metadata
 metadataDecoder =
     Decode.succeed Metadata
         |> required "id" Decode.int
-        |> optional "deleted" (Decode.nullable Decode.bool) Nothing
+        |> optional "deleted" Decode.bool False
         |> optional "type" (Decode.nullable decodeType) Nothing
-        |> optional "by" (Decode.nullable Decode.string) Nothing
-        |> optional "time" (Decode.nullable Decode.int) Nothing
-        |> optional "text" (Decode.nullable Decode.string) Nothing
+        |> optional "by" Decode.string "Anonymous"
+        |> optional "time" Decode.int 0
+        |> optional "text" Decode.string ""
         |> optional "parent" (Decode.nullable Decode.int) Nothing
         |> optional "poll" (Decode.nullable Decode.int) Nothing
         |> optional "kids" (Decode.list Decode.int) []
         |> optional "url" (Decode.nullable Decode.string) Nothing
-        |> optional "score" (Decode.nullable Decode.int) Nothing
-        |> optional "title" (Decode.nullable Decode.string) Nothing
+        |> optional "score" Decode.int 0
+        |> optional "title" Decode.string "No title"
         |> optional "parts" (Decode.list Decode.int) []
-        |> optional "descendants" (Decode.nullable Decode.int) Nothing
+        |> optional "descendants" Decode.int 0
 
 
 decodeType : Decoder Type

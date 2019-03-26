@@ -1,22 +1,22 @@
-module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.Item.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Home.Types exposing (..)
-import Page.Home.View as View
+import Page.Item.Types exposing (..)
+import Page.Item.View as View
 import Session exposing (Session)
 
 
 type alias Model =
-    Page.Home.Types.Model
+    Page.Item.Types.Model
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : Session -> Int -> ( Model, Cmd Msg )
+init session id =
     ( { session = session
       , feed = Loading
       }
-    , Firebase.requestPosts Firebase.Top Nothing
+    , Firebase.requestComments id
     )
 
 
@@ -30,17 +30,17 @@ view model =
 
 
 type alias Msg =
-    Page.Home.Types.Msg
+    Page.Item.Types.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    Page.Home.Types.update msg model
+    Page.Item.Types.update msg model
 
 
 toSession : Model -> Session
 toSession =
-    Page.Home.Types.toSession
+    Page.Item.Types.toSession
 
 
 subscriptions : Model -> Sub Msg

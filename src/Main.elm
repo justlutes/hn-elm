@@ -7,6 +7,7 @@ import Html exposing (Html)
 import Page
 import Page.Blank as Blank
 import Page.Home.Main as Home
+import Page.Item.Main as Item
 import Page.NotFound as NotFound
 import Route exposing (Route)
 import Session as Session exposing (Session)
@@ -19,6 +20,7 @@ import Url exposing (Url)
 
 type Model
     = Home Home.Model
+    | Item Item.Model
     | NotFound Session
     | Redirect Session
 
@@ -55,6 +57,9 @@ view model =
         Home home ->
             viewPage Page.Home HomeMsg (Home.view home)
 
+        Item item ->
+            viewPage Page.Item ItemMsg (Item.view item)
+
 
 
 -- UPDATE
@@ -66,6 +71,7 @@ type Msg
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | HomeMsg Home.Msg
+    | ItemMsg Item.Msg
     | GotSession Session
 
 
@@ -80,6 +86,9 @@ toSession page =
 
         Home home ->
             Home.toSession home
+
+        Item item ->
+            Item.toSession item
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -110,6 +119,10 @@ changeRouteTo maybeRoute model =
 
         Just Route.Jobs ->
             ( NotFound session, Cmd.none )
+
+        Just (Route.Item id) ->
+            Item.init session id
+                |> updateWith Item ItemMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -148,6 +161,10 @@ update msg model =
             Home.update subMsg home
                 |> updateWith Home HomeMsg model
 
+        ( ItemMsg subMsg, Item item ) ->
+            Item.update subMsg item
+                |> updateWith Item ItemMsg model
+
         ( _, _ ) ->
             ( model, Cmd.none )
 
@@ -179,6 +196,9 @@ subscriptions model =
 
         Home home ->
             Sub.map HomeMsg (Home.subscriptions home)
+
+        Item item ->
+            Sub.map ItemMsg (Item.subscriptions item)
 
 
 main : Program Flags Model Msg

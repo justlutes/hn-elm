@@ -1,4 +1,4 @@
-module Data.Feed exposing (Feed, cursor)
+module Data.Feed exposing (Feed, cursor, getPosts)
 
 import Data.Post exposing (Post)
 
@@ -12,3 +12,8 @@ type alias Feed =
 cursor : Feed -> Maybe Int
 cursor feed =
     feed.cursor
+
+
+getPosts : Feed -> List Post
+getPosts feed =
+    feed.posts

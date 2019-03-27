@@ -20,6 +20,14 @@ function itemsWithInfo(items: number[]): Promise<Item[]> {
   return Promise.all(promises);
 }
 
+export async function getPost(id: number): Promise<Item> {
+  const itemRef = databaseRef.child(`/item/${id}`);
+  const itemSnapshot = await itemRef.once('value');
+  const itemValue: Item = itemSnapshot.val();
+
+  return itemValue;
+}
+
 export async function getTopStories(): Promise<Item[]> {
   const ref = databaseRef.child('/topstories');
   const snapshot = await ref.once('value');

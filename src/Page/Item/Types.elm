@@ -1,7 +1,7 @@
 module Page.Item.Types exposing (Model, Msg(..), Status(..), toSession, update)
 
 import Browser.Dom as Dom
-import Data.Feed as Feed exposing (Feed)
+import Data.Comment as Comment exposing (Comment)
 import Data.Firebase as Firebase
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
@@ -14,7 +14,9 @@ import Session exposing (Session)
 
 type alias Model =
     { session : Session
-    , feed : Status Feed
+    , comments : Status (List Comment)
+    , postId : Int
+    , parent : Status Post
     }
 
 
@@ -27,10 +29,10 @@ type Status a
 
 type Msg
     = NoOp
+    | Initialize
     | GotSession Session
-    | CompletedPostsLoad Feed
+    | CompletedCommentsLoad ( Post, List Comment )
     | PortFailure String
-    | LoadMore
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,46 +44,25 @@ update msg model =
         GotSession session ->
             ( { model | session = session }, Cmd.none )
 
-        CompletedPostsLoad { cursor, posts } ->
-            let
-                modelPosts =
-                    model
-                        |> getFeed
-                        |> Maybe.map Feed.getPosts
-                        |> Maybe.withDefault []
-            in
+        CompletedCommentsLoad ( post, comments ) ->
             ( { model
-                | feed = Loaded { cursor = cursor, posts = modelPosts ++ posts }
+                | comments = Loaded comments
+                , parent = Loaded post
               }
             , Cmd.none
             )
 
-        LoadMore ->
-            let
-                maybeCursor =
-                    model
-                        |> getFeed
-                        |> Maybe.map Feed.cursor
-                        |> Maybe.withDefault Nothing
-            in
+        Initialize ->
             ( model
-            , Firebase.requestPosts Firebase.Top maybeCursor
+            , Firebase.requestComments model.postId
             )
 
         PortFailure err ->
-            ( model, Cmd.none )
+            ( { model | comments = Failed }
+            , Cmd.none
+            )
 
 
 toSession : Model -> Session
 toSession model =
     model.session
-
-
-getFeed : Model -> Maybe Feed
-getFeed model =
-    case model.feed of
-        Loaded feed ->
-            Just feed
-
-        _ ->
-            Nothing

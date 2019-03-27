@@ -4,7 +4,10 @@ import Data.Firebase as Firebase
 import Html exposing (Html)
 import Page.Item.Types exposing (..)
 import Page.Item.View as View
+import Process
 import Session exposing (Session)
+import Task
+import Time
 
 
 type alias Model =
@@ -14,9 +17,11 @@ type alias Model =
 init : Session -> Int -> ( Model, Cmd Msg )
 init session id =
     ( { session = session
-      , feed = Loading
+      , comments = Loading
+      , postId = id
+      , parent = Loading
       }
-    , Firebase.requestComments id
+    , Task.perform (\_ -> Initialize) (Process.sleep 100)
     )
 
 
@@ -47,5 +52,5 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Session.changes GotSession (Session.navKey model.session)
-        , Firebase.inBoundPosts { onPosts = CompletedPostsLoad, onFailure = PortFailure }
+        , Firebase.inBoundComments { onComments = CompletedCommentsLoad, onFailure = PortFailure }
         ]

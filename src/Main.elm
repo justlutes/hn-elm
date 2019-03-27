@@ -67,7 +67,6 @@ view model =
 
 type Msg
     = Ignored
-    | ChangedRoute (Maybe Route)
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | HomeMsg Home.Msg
@@ -106,7 +105,7 @@ changeRouteTo maybeRoute model =
 
         Just Route.Home ->
             Home.init session
-                |> updateWith Home HomeMsg model
+                |> updateWith Home HomeMsg
 
         Just Route.Ask ->
             ( NotFound session, Cmd.none )
@@ -122,7 +121,7 @@ changeRouteTo maybeRoute model =
 
         Just (Route.Item id) ->
             Item.init session id
-                |> updateWith Item ItemMsg model
+                |> updateWith Item ItemMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -149,9 +148,6 @@ update msg model =
         ( ChangedUrl url, _ ) ->
             changeRouteTo (Route.fromUrl url) model
 
-        ( ChangedRoute route, _ ) ->
-            changeRouteTo route model
-
         ( GotSession session, Redirect _ ) ->
             ( Redirect session
             , Route.replaceUrl (Session.navKey session) Route.Home
@@ -159,11 +155,11 @@ update msg model =
 
         ( HomeMsg subMsg, Home home ) ->
             Home.update subMsg home
-                |> updateWith Home HomeMsg model
+                |> updateWith Home HomeMsg
 
         ( ItemMsg subMsg, Item item ) ->
             Item.update subMsg item
-                |> updateWith Item ItemMsg model
+                |> updateWith Item ItemMsg
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -172,10 +168,9 @@ update msg model =
 updateWith :
     (subModel -> Model)
     -> (subMsg -> Msg)
-    -> Model
     -> ( subModel, Cmd subMsg )
     -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
+updateWith toModel toMsg ( subModel, subCmd ) =
     ( toModel subModel
     , Cmd.map toMsg subCmd
     )
@@ -194,11 +189,11 @@ subscriptions model =
         Redirect _ ->
             Session.changes GotSession (Session.navKey (toSession model))
 
-        Home home ->
-            Sub.map HomeMsg (Home.subscriptions home)
+        Home subModel ->
+            Sub.map HomeMsg (Home.subscriptions subModel)
 
-        Item item ->
-            Sub.map ItemMsg (Item.subscriptions item)
+        Item subModel ->
+            Sub.map ItemMsg (Item.subscriptions subModel)
 
 
 main : Program Flags Model Msg

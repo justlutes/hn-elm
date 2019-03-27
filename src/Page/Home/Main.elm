@@ -4,7 +4,10 @@ import Data.Firebase as Firebase
 import Html exposing (Html)
 import Page.Home.Types exposing (..)
 import Page.Home.View as View
+import Process
 import Session exposing (Session)
+import Task
+import Time
 
 
 type alias Model =
@@ -16,7 +19,7 @@ init session =
     ( { session = session
       , feed = Loading
       }
-    , Firebase.requestPosts Firebase.Top Nothing
+    , Task.perform (\_ -> Initialize) (Process.sleep 100)
     )
 
 

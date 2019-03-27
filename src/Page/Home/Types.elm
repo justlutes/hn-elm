@@ -28,6 +28,7 @@ type Status a
 type Msg
     = NoOp
     | GotSession Session
+    | Initialize
     | CompletedPostsLoad Feed
     | PortFailure String
     | LoadMore
@@ -56,6 +57,9 @@ update msg model =
             , Cmd.none
             )
 
+        Initialize ->
+            ( model, Firebase.requestPosts Firebase.Top Nothing )
+
         LoadMore ->
             let
                 maybeCursor =
@@ -69,7 +73,9 @@ update msg model =
             )
 
         PortFailure err ->
-            ( model, Cmd.none )
+            ( { model | feed = Failed }
+            , Cmd.none
+            )
 
 
 toSession : Model -> Session

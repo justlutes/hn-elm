@@ -9,7 +9,7 @@ export namespace Elm {
         firebaseOutbound: {
           subscribe(callback: (data: any) => void): void
         }
-        requestedPosts: {
+        requestedContent: {
           send(data: any): void
         }
       };

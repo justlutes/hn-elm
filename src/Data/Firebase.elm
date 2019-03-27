@@ -1,5 +1,6 @@
-port module Data.Firebase exposing (Category(..), Config, inBoundPosts, requestComments, requestPosts, requestedPosts)
+port module Data.Firebase exposing (Category(..), inBoundComments, inBoundPosts, requestComments, requestPosts, requestedContent)
 
+import Data.Comment as Comment exposing (Comment)
 import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
 import Json.Decode as Decode exposing (Decoder, Value)
@@ -27,7 +28,8 @@ requestPosts : Category -> Maybe Int -> Cmd msg
 requestPosts category maybeCursor =
     firebaseOutbound <|
         Encode.object
-            [ ( "category", Encode.string <| categoryToString category )
+            [ ( "cmd", Encode.string "RequestPosts" )
+            , ( "category", Encode.string <| categoryToString category )
             , ( "cursor"
               , case maybeCursor of
                     Just cursor ->
@@ -43,28 +45,73 @@ requestComments : Int -> Cmd msg
 requestComments parentId =
     firebaseOutbound <|
         Encode.object
-            [ ( "category", Encode.string <| categoryToString Comment )
+            [ ( "cmd", Encode.string "RequestComment" )
             , ( "parentId", Encode.string <| String.fromInt parentId )
             ]
 
 
 {-| Receive all fetched news posts
 -}
-port requestedPosts : (Decode.Value -> msg) -> Sub msg
+port requestedContent : (Decode.Value -> msg) -> Sub msg
 
 
-inBoundPosts : Config msg -> Sub msg
+inBoundPosts :
+    { onPosts : Feed -> msg
+    , onFailure : String -> msg
+    }
+    -> Sub msg
 inBoundPosts config =
     let
-        postDecoder =
-            Decode.succeed Feed
-                |> Decode.optional "cursor" (Decode.nullable Decode.int) Nothing
-                |> Decode.required "posts" (Decode.list Post.postDecoder)
-                |> Decode.map config.onPosts
+        contentDecoder =
+            Decode.field "cmd" Decode.string
+                |> Decode.andThen
+                    (\cmd ->
+                        case cmd of
+                            "RequestPosts" ->
+                                Decode.succeed Feed
+                                    |> Decode.optional "cursor" (Decode.nullable Decode.int) Nothing
+                                    |> Decode.required "posts" (Decode.list Post.postDecoder)
+                                    |> Decode.map config.onPosts
+
+                            unmatched ->
+                                Decode.fail <| unmatched ++ "is not a supported command"
+                    )
     in
-    requestedPosts <|
+    requestedContent <|
         \value ->
-            case Decode.decodeValue postDecoder value of
+            case Decode.decodeValue contentDecoder value of
+                Ok msg ->
+                    msg
+
+                Err e ->
+                    config.onFailure <| Decode.errorToString e
+
+
+inBoundComments :
+    { onComments : ( Post, List Comment ) -> msg
+    , onFailure : String -> msg
+    }
+    -> Sub msg
+inBoundComments config =
+    let
+        contentDecoder =
+            Decode.field "cmd" Decode.string
+                |> Decode.andThen
+                    (\cmd ->
+                        case cmd of
+                            "RequestComment" ->
+                                Decode.succeed Tuple.pair
+                                    |> Decode.required "post" Post.postDecoder
+                                    |> Decode.required "comments" (Decode.list Comment.commentDecoder)
+                                    |> Decode.map config.onComments
+
+                            unmatched ->
+                                Decode.fail <| unmatched ++ "is not a supported command"
+                    )
+    in
+    requestedContent <|
+        \value ->
+            case Decode.decodeValue contentDecoder value of
                 Ok msg ->
                     msg
 

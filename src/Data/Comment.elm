@@ -1,4 +1,4 @@
-module Data.Comment exposing (Comment, commentDecoder, time)
+module Data.Comment exposing (Comment, author, commentDecoder, metadata, time)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -17,7 +17,7 @@ type alias Metadata =
     { id : Int
     , by : String
     , time : Int
-    , kids : List Int
+    , kids : List Comment
     , parent : Maybe Int
     , text : String
     }
@@ -64,6 +64,6 @@ metadataDecoder =
         |> required "id" Decode.int
         |> optional "by" Decode.string "Anonymous"
         |> optional "time" Decode.int 0
-        |> optional "kids" (Decode.list Decode.int) []
+        |> optional "kids" (Decode.list (Decode.lazy (\_ -> commentDecoder))) []
         |> optional "parent" (Decode.nullable Decode.int) Nothing
         |> optional "text" Decode.string ""

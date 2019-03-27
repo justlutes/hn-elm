@@ -28,7 +28,8 @@ viewContent model =
                 ]
 
         Loading ->
-            UiLoading.view { color = "#60b5cc", size = 30 }
+            Html.div [ Attributes.class "loading-wrapper" ]
+                [ UiLoading.view { color = "#60b5cc", size = 30 } ]
 
         LoadingSlowly ->
             UiLoading.view { color = "yellow", size = 30 }

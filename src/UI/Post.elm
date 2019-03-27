@@ -1,4 +1,4 @@
-module Ui.Post exposing (view)
+module Ui.Post exposing (buildLink, view)
 
 import Data.Post as Post exposing (Post)
 import Html exposing (Attribute, Html)

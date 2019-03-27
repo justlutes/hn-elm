@@ -10,6 +10,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: $primary-font;
+  background: $secondary-color;
 }
 
 .fill-current {
@@ -27,6 +28,13 @@ svg.h-full {
 .content-wrapper {
   padding: 1em 2em;
   background: #f2f2f2;
+}
+
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding: 10em;
 }
 
 footer {

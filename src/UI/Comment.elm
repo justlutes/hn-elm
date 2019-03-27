@@ -42,7 +42,7 @@ viewComment comment =
                 ]
             ]
         , Html.div []
-            [ Html.span [] [ Html.text text ] ]
+            [ Html.span [ Attributes.class "text-content" ] [ Html.text text ] ]
         , if List.isEmpty kids then
             Html.div [] [ Html.text "" ]
 

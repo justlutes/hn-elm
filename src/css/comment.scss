@@ -2,7 +2,7 @@
   list-style: none;
   color: $black;
   margin: 0;
-  padding: 0;
+  padding: 0 15px;
   display: flex;
   flex-direction: column;
 
@@ -15,12 +15,29 @@
 
     .comment-content {
       padding-top: 1em;
+      font-size: 14px;
+
+      .text-content {
+        padding-bottom: 0.5em;
+      }
     }
 
     .child-comment {
       padding-left: 0.5em;
       margin-left: 1em;
       border-left: 1px solid $light-grey;
+    }
+  }
+}
+
+.comment-parent {
+  a {
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: $black;
+    &:hover {
+      color: $accent-color;
     }
   }
 }

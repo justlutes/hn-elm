@@ -1,14 +1,16 @@
 module Page.Item.View exposing (view)
 
 import Data.Comment as Comment exposing (Comment)
-import Data.Feed exposing (Feed)
+import Data.Post as Post exposing (Post)
 import Html exposing (Html)
 import Html.Attributes as Attributes
-import Html.Events as Events
 import Html.Keyed as Keyed
 import Page.Item.Types exposing (..)
+import Route exposing (Route)
+import String.Extra as String
 import Ui.Comment as Comment
 import Ui.Loading.Main as UiLoading
+import Ui.Post as Post
 
 
 view : Model -> { title : String, content : Html Msg }
@@ -20,17 +22,52 @@ view model =
 
 viewContent : Model -> Html Msg
 viewContent model =
-    case model.comments of
-        Loaded comments ->
+    case ( model.comments, model.parent ) of
+        ( Loaded comments, Loaded parent ) ->
             Html.div []
-                [ Keyed.node "ul" [ Attributes.class "comment-list" ] <| List.map Comment.view comments
+                [ viewParent parent
+                , Keyed.node "ul" [ Attributes.class "comment-list" ] <| List.map Comment.view comments
                 ]
 
-        Loading ->
-            UiLoading.view { color = "#60b5cc", size = 30 }
+        ( Loading, Loading ) ->
+            Html.div [ Attributes.class "loading-wrapper" ]
+                [ UiLoading.view { color = "#60b5cc", size = 30 } ]
 
-        LoadingSlowly ->
+        ( LoadingSlowly, LoadingSlowly ) ->
             UiLoading.view { color = "yellow", size = 30 }
 
-        Failed ->
+        ( Failed, Failed ) ->
             Html.div [] [ Html.text "Error loading comments" ]
+
+        ( _, _ ) ->
+            Html.div [] [ Html.text "Error loading content" ]
+
+
+viewParent : Post -> Html Msg
+viewParent post =
+    let
+        { descendants, id, url, title, score } =
+            Post.metadata post
+
+        time =
+            Post.time post
+    in
+    Html.div [ Attributes.class "comment-parent" ]
+        [ Html.a
+            (Post.buildLink post)
+            [ Html.text title ]
+        , Html.div [ Attributes.class "post-subcontent" ]
+            [ Html.span []
+                [ Html.text <|
+                    String.concat
+                        [ String.fromInt score
+                        , " points"
+                        , " by "
+                        , Post.author post
+                        , " "
+                        , String.fromInt time
+                        , String.pluralize " hour ago" " hours ago" time
+                        ]
+                ]
+            ]
+        ]

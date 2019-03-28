@@ -1,4 +1,4 @@
-module Ui.Post exposing (buildLink, view)
+module Ui.Post exposing (buildLink, view, viewJobPost)
 
 import Data.Post as Post exposing (Post)
 import Html exposing (Attribute, Html)
@@ -6,6 +6,7 @@ import Html.Attributes as Attributes
 import Html.Attributes.Extra as Attributes
 import Route exposing (Route)
 import String.Extra as String
+import Url
 
 
 view : Post -> ( String, Html msg )
@@ -51,6 +52,43 @@ view post =
     )
 
 
+viewJobPost : Post -> ( String, Html msg )
+viewJobPost post =
+    let
+        { title, id, url } =
+            Post.metadata post
+
+        urlHost =
+            Post.url post
+                |> Maybe.map (\u -> u.host)
+                |> Maybe.withDefault ""
+
+        time =
+            Post.time post
+    in
+    ( String.fromInt id
+    , Html.li []
+        [ Html.a (buildLink post)
+            [ Html.span [] [ Html.text title ]
+            , if String.isEmpty urlHost then
+                Html.text ""
+
+              else
+                Html.span [ Attributes.class "post-host" ] [ Html.text ("(" ++ urlHost ++ ")") ]
+            ]
+        , Html.div [ Attributes.class "post-subcontent" ]
+            [ Html.span []
+                [ Html.text <|
+                    String.concat
+                        [ String.fromInt time
+                        , String.pluralize " hour ago" " hours ago" time
+                        ]
+                ]
+            ]
+        ]
+    )
+
+
 
 -- HELPERS
 
@@ -59,10 +97,10 @@ buildLink : Post -> List (Attribute msg)
 buildLink post =
     case Post.url post of
         Just url ->
-            [ Attributes.href url
+            [ Attributes.href <| Url.toString url
             , Attributes.target "_blank"
             , Attributes.rel "noopener"
             ]
 
         Nothing ->
-            [ Route.href Route.Ask ]
+            [ Route.href (Route.Item <| Post.id post) ]

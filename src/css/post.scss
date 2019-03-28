@@ -12,13 +12,20 @@
 
     a {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
       text-decoration: none;
       font-weight: 600;
       cursor: pointer;
       color: $black;
       &:hover {
         color: $accent-color;
+      }
+
+      .post-host {
+        padding-left: 5px;
+        font-size: 12px;
+        color: $light-grey;
       }
     }
   }

@@ -1,5 +1,14 @@
 import { Elm } from '../Main';
-import { getBestStories, getNewStories, getTopStories, getComments, getPost } from '../js/lib/api';
+import {
+  getBestStories,
+  getNewStories,
+  getTopStories,
+  getComments,
+  getPost,
+  getShowStories,
+  getAskStories,
+  getJobStories,
+} from '../js/lib/api';
 import { Item } from '../js/@types';
 
 interface FirebaseCmds {
@@ -15,7 +24,7 @@ interface RequestComment extends FirebaseCmds {
   parentId: number;
 }
 
-type Category = 'top' | 'new' | 'best';
+type Category = 'top' | 'new' | 'best' | 'show' | 'ask' | 'job';
 
 export default function(app: Elm.Main.App) {
   // Get Firebase posts based on category type and cursor
@@ -32,8 +41,14 @@ export default function(app: Elm.Main.App) {
       case 'top':
         posts = await getTopStories();
         break;
-      default:
-        posts = await getTopStories();
+      case 'show':
+        posts = await getShowStories();
+        break;
+      case 'ask':
+        posts = await getAskStories();
+        break;
+      case 'job':
+        posts = await getJobStories();
         break;
     }
 

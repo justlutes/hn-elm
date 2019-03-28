@@ -37,8 +37,35 @@ export async function getTopStories(): Promise<Item[]> {
   return storiesWithInfo;
 }
 
+export async function getShowStories(): Promise<Item[]> {
+  const ref = databaseRef.child('/showstories');
+  const snapshot = await ref.once('value');
+  const storiesRef = snapshot.val();
+  const storiesWithInfo: Item[] = await itemsWithInfo(storiesRef);
+
+  return storiesWithInfo;
+}
+
+export async function getAskStories(): Promise<Item[]> {
+  const ref = databaseRef.child('/askstories');
+  const snapshot = await ref.once('value');
+  const storiesRef = snapshot.val();
+  const storiesWithInfo: Item[] = await itemsWithInfo(storiesRef);
+
+  return storiesWithInfo;
+}
+
 export async function getNewStories(): Promise<Item[]> {
   const ref = databaseRef.child('/newstories');
+  const snapshot = await ref.once('value');
+  const storiesRef = snapshot.val();
+  const storiesWithInfo: Item[] = await itemsWithInfo(storiesRef);
+
+  return storiesWithInfo;
+}
+
+export async function getJobStories(): Promise<Item[]> {
+  const ref = databaseRef.child('/jobstories');
   const snapshot = await ref.once('value');
   const storiesRef = snapshot.val();
   const storiesWithInfo: Item[] = await itemsWithInfo(storiesRef);

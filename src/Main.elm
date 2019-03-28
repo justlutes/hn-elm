@@ -5,10 +5,14 @@ import Browser.Navigation as Nav
 import Data.Flags exposing (Flags)
 import Html exposing (Html)
 import Page
+import Page.Ask.Main as Ask
 import Page.Blank as Blank
 import Page.Home.Main as Home
 import Page.Item.Main as Item
+import Page.Jobs.Main as Jobs
+import Page.New.Main as New
 import Page.NotFound as NotFound
+import Page.Show.Main as Show
 import Route exposing (Route)
 import Session as Session exposing (Session)
 import Url exposing (Url)
@@ -21,6 +25,10 @@ import Url exposing (Url)
 type Model
     = Home Home.Model
     | Item Item.Model
+    | New New.Model
+    | Show Show.Model
+    | Ask Ask.Model
+    | Jobs Jobs.Model
     | NotFound Session
     | Redirect Session
 
@@ -54,11 +62,23 @@ view model =
         NotFound _ ->
             viewPage Page.Other (\_ -> Ignored) NotFound.view
 
-        Home home ->
-            viewPage Page.Home HomeMsg (Home.view home)
+        Home subModel ->
+            viewPage Page.Home HomeMsg (Home.view subModel)
 
-        Item item ->
-            viewPage Page.Item ItemMsg (Item.view item)
+        Item subModel ->
+            viewPage Page.Item ItemMsg (Item.view subModel)
+
+        New subModel ->
+            viewPage Page.New NewMsg (New.view subModel)
+
+        Show subModel ->
+            viewPage Page.Show ShowMsg (Show.view subModel)
+
+        Ask subModel ->
+            viewPage Page.Ask AskMsg (Ask.view subModel)
+
+        Jobs subModel ->
+            viewPage Page.Jobs JobsMsg (Jobs.view subModel)
 
 
 
@@ -71,6 +91,10 @@ type Msg
     | ClickedLink Browser.UrlRequest
     | HomeMsg Home.Msg
     | ItemMsg Item.Msg
+    | NewMsg New.Msg
+    | ShowMsg Show.Msg
+    | AskMsg Ask.Msg
+    | JobsMsg Jobs.Msg
     | GotSession Session
 
 
@@ -83,11 +107,23 @@ toSession page =
         NotFound session ->
             session
 
-        Home home ->
-            Home.toSession home
+        Home subModel ->
+            Home.toSession subModel
 
-        Item item ->
-            Item.toSession item
+        Item subModel ->
+            Item.toSession subModel
+
+        New subModel ->
+            New.toSession subModel
+
+        Show subModel ->
+            Show.toSession subModel
+
+        Ask subModel ->
+            Ask.toSession subModel
+
+        Jobs subModel ->
+            Jobs.toSession subModel
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -108,16 +144,20 @@ changeRouteTo maybeRoute model =
                 |> updateWith Home HomeMsg
 
         Just Route.Ask ->
-            ( NotFound session, Cmd.none )
+            Ask.init session
+                |> updateWith Ask AskMsg
 
         Just Route.Show ->
-            ( NotFound session, Cmd.none )
+            Show.init session
+                |> updateWith Show ShowMsg
 
         Just Route.New ->
-            ( NotFound session, Cmd.none )
+            New.init session
+                |> updateWith New NewMsg
 
         Just Route.Jobs ->
-            ( NotFound session, Cmd.none )
+            Jobs.init session
+                |> updateWith Jobs JobsMsg
 
         Just (Route.Item id) ->
             Item.init session id
@@ -153,13 +193,29 @@ update msg model =
             , Route.replaceUrl (Session.navKey session) Route.Home
             )
 
-        ( HomeMsg subMsg, Home home ) ->
-            Home.update subMsg home
+        ( HomeMsg subMsg, Home subModel ) ->
+            Home.update subMsg subModel
                 |> updateWith Home HomeMsg
 
-        ( ItemMsg subMsg, Item item ) ->
-            Item.update subMsg item
+        ( ItemMsg subMsg, Item subModel ) ->
+            Item.update subMsg subModel
                 |> updateWith Item ItemMsg
+
+        ( NewMsg subMsg, New subModel ) ->
+            New.update subMsg subModel
+                |> updateWith New NewMsg
+
+        ( ShowMsg subMsg, Show subModel ) ->
+            Show.update subMsg subModel
+                |> updateWith Show ShowMsg
+
+        ( AskMsg subMsg, Ask subModel ) ->
+            Ask.update subMsg subModel
+                |> updateWith Ask AskMsg
+
+        ( JobsMsg subMsg, Jobs subModel ) ->
+            Jobs.update subMsg subModel
+                |> updateWith Jobs JobsMsg
 
         ( _, _ ) ->
             ( model, Cmd.none )
@@ -194,6 +250,18 @@ subscriptions model =
 
         Item subModel ->
             Sub.map ItemMsg (Item.subscriptions subModel)
+
+        New subModel ->
+            Sub.map NewMsg (New.subscriptions subModel)
+
+        Show subModel ->
+            Sub.map ShowMsg (Show.subscriptions subModel)
+
+        Ask subModel ->
+            Sub.map AskMsg (Ask.subscriptions subModel)
+
+        Jobs subModel ->
+            Sub.map JobsMsg (Jobs.subscriptions subModel)
 
 
 main : Program Flags Model Msg

@@ -1,8 +1,9 @@
-module Data.Post exposing (Post, author, detailsDecoder, metadata, postDecoder, time, url)
+module Data.Post exposing (Post, author, detailsDecoder, id, metadata, postDecoder, time, url)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Time exposing (Posix)
+import Url exposing (Url)
 
 
 type Post
@@ -54,9 +55,16 @@ metadata (Post details) =
     details.metadata
 
 
-url : Post -> Maybe String
+id : Post -> Int
+id (Post details) =
+    details.metadata.id
+
+
+url : Post -> Maybe Url
 url (Post details) =
     details.metadata.url
+        |> Maybe.map Url.fromString
+        |> Maybe.withDefault Nothing
 
 
 time : Post -> Int

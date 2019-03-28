@@ -12,7 +12,10 @@ type Category
     = Best
     | New
     | Top
+    | Show
     | Comment
+    | Ask
+    | Job
 
 
 type alias Config msg =
@@ -137,3 +140,12 @@ categoryToString category =
 
         Comment ->
             "comment"
+
+        Show ->
+            "show"
+
+        Ask ->
+            "ask"
+
+        Job ->
+            "job"

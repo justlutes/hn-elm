@@ -9,6 +9,7 @@ import Html.Keyed as Keyed
 import Page.Home.Types exposing (..)
 import Ui.Loading.Main as UiLoading
 import Ui.Post as Post
+import Ui.ScrollToTop.Main as ScrollToTop
 
 
 view : Model -> { title : String, content : Html Msg }
@@ -24,6 +25,7 @@ viewContent model =
         Loaded { posts } ->
             Html.div []
                 [ Keyed.node "ol" [ Attributes.class "post-list" ] <| List.map Post.view posts
+                , ScrollToTop.view
                 , loadMoreButton
                 ]
 

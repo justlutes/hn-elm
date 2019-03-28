@@ -1,5 +1,7 @@
 import { Elm } from '../../Main';
 import '../../UI/Loading';
+import '../../UI/Comment/Text';
+import '../../UI/ScrollToTop';
 import iconDefinitions from './icon-definitions';
 import FirebasePort from '../../Data/Firebase';
 

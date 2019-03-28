@@ -1,5 +1,5 @@
 import { CustomElement } from '../../js/components/custom_element';
-import './style.css';
+import './style.scss';
 import createSvg from '../../js/lib/createSvg';
 
 class LoadingSpinner extends CustomElement {

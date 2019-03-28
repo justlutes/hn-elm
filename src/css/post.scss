@@ -4,6 +4,10 @@
   padding: 0;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  @media all and (min-width: 50em) {
+    width: 85%;
+  }
 
   li {
     &:not(:last-child) {
@@ -12,12 +16,16 @@
 
     a {
       display: flex;
-      flex-direction: row;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       text-decoration: none;
       font-weight: 600;
       cursor: pointer;
       color: $black;
+      @media all and (min-width: 50em) {
+        flex-direction: row;
+        align-items: center;
+      }
       &:hover {
         color: $accent-color;
       }
@@ -32,9 +40,13 @@
 
   .post-subcontent {
     display: flex;
+    flex-direction: column;
     align-content: center;
     font-size: 12px;
     padding-top: 0.5em;
+    @media all and (min-width: 50em) {
+      flex-direction: row;
+    }
 
     span:first-child {
       position: relative;
@@ -44,6 +56,10 @@
     .commment-link {
       text-decoration: underline;
       cursor: pointer;
+      padding-top: 5px;
+      @media all and (min-width: 50em) {
+        padding-top: 0;
+      }
     }
   }
 }

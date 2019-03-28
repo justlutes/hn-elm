@@ -6,6 +6,7 @@ import Html.Attributes as Attributes
 import Html.Attributes.Extra as Attributes
 import Route exposing (Route)
 import String.Extra as String
+import Ui.Comment.Text as CommentText
 
 
 view : Comment -> ( String, Html msg )
@@ -42,7 +43,7 @@ viewComment comment =
                 ]
             ]
         , Html.div []
-            [ Html.span [ Attributes.class "text-content" ] [ Html.text text ] ]
+            [ CommentText.view text ]
         , if List.isEmpty kids then
             Html.div [] [ Html.text "" ]
 

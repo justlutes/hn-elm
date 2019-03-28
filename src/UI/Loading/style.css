@@ -1,0 +1,17 @@
+hn-loading-spinner {
+  color: var(--hn-loading-spinner-color, #006fbf);
+  display: inline-block;
+  text-align: initial;
+}
+hn-loading-spinner .hn-loading-spinner-wrapper {
+  height: var(--hn-loading-spinner-size, 50px);
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+  width: var(--hn-loading-spinner-size, 50px);
+}
+
+hn-loading-spinner svg path,
+ht-loading-spinner svg rect {
+  fill: var(--hn-loading-spinner-color, #006fbf);
+}

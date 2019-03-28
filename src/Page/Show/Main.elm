@@ -1,9 +1,9 @@
-module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.Show.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Home.Types exposing (..)
-import Page.Home.View as View
+import Page.Show.Types exposing (..)
+import Page.Show.View as View
 import Process
 import Session exposing (Session)
 import Task
@@ -11,7 +11,7 @@ import Time
 
 
 type alias Model =
-    Page.Home.Types.Model
+    Page.Show.Types.Model
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -33,17 +33,17 @@ view model =
 
 
 type alias Msg =
-    Page.Home.Types.Msg
+    Page.Show.Types.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    Page.Home.Types.update msg model
+    Page.Show.Types.update msg model
 
 
 toSession : Model -> Session
 toSession =
-    Page.Home.Types.toSession
+    Page.Show.Types.toSession
 
 
 subscriptions : Model -> Sub Msg

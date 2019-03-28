@@ -1,4 +1,4 @@
-module Page.Home.Types exposing (Model, Msg(..), Status(..), toSession, update)
+module Page.New.Types exposing (Model, Msg(..), Status(..), toSession, update)
 
 import Browser.Dom as Dom
 import Data.Feed as Feed exposing (Feed)
@@ -58,7 +58,7 @@ update msg model =
             )
 
         Initialize ->
-            ( model, Firebase.requestPosts Firebase.Top Nothing )
+            ( model, Firebase.requestPosts Firebase.Show Nothing )
 
         LoadMore ->
             let
@@ -69,7 +69,7 @@ update msg model =
                         |> Maybe.withDefault Nothing
             in
             ( model
-            , Firebase.requestPosts Firebase.Top maybeCursor
+            , Firebase.requestPosts Firebase.Show maybeCursor
             )
 
         PortFailure err ->

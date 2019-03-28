@@ -1,9 +1,9 @@
-module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.Item.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Home.Types exposing (..)
-import Page.Home.View as View
+import Page.Item.Types exposing (..)
+import Page.Item.View as View
 import Process
 import Session exposing (Session)
 import Task
@@ -11,13 +11,15 @@ import Time
 
 
 type alias Model =
-    Page.Home.Types.Model
+    Page.Item.Types.Model
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : Session -> Int -> ( Model, Cmd Msg )
+init session id =
     ( { session = session
-      , feed = Loading
+      , comments = Loading
+      , postId = id
+      , parent = Loading
       }
     , Task.perform (\_ -> Initialize) (Process.sleep 100)
     )
@@ -33,22 +35,22 @@ view model =
 
 
 type alias Msg =
-    Page.Home.Types.Msg
+    Page.Item.Types.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    Page.Home.Types.update msg model
+    Page.Item.Types.update msg model
 
 
 toSession : Model -> Session
 toSession =
-    Page.Home.Types.toSession
+    Page.Item.Types.toSession
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Session.changes GotSession (Session.navKey model.session)
-        , Firebase.inBoundPosts { onPosts = CompletedPostsLoad, onFailure = PortFailure }
+        , Firebase.inBoundComments { onComments = CompletedCommentsLoad, onFailure = PortFailure }
         ]

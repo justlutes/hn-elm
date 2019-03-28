@@ -1,4 +1,12 @@
 import { Elm } from '../../Main';
-import './custom_element_test';
+import '../../UI/Loading';
+import iconDefinitions from './icon-definitions';
+import FirebasePort from '../../Data/Firebase';
 
-export default (app: Elm.Main.App) => {};
+export default async (app: Elm.Main.App) => {
+  // Embed global icon definitions
+  iconDefinitions(app);
+
+  // Port initializations
+  FirebasePort(app);
+};

@@ -1,4 +1,4 @@
-module Page.Home.View exposing (view)
+module Page.Ask.View exposing (view)
 
 import Data.Feed exposing (Feed)
 import Data.Post as Post exposing (Post)
@@ -6,7 +6,7 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
 import Html.Keyed as Keyed
-import Page.Home.Types exposing (..)
+import Page.Ask.Types exposing (..)
 import Ui.Loading.Main as UiLoading
 import Ui.Post as Post
 

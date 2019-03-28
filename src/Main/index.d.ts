@@ -6,17 +6,11 @@ export namespace Elm {
   namespace Main {
     export interface App {
       ports: {
-        initialize: {
-          subscribe(callback: (data: string) => void): void
-        }
-        requestPosts: {
-          subscribe(callback: (data: { category: string }) => void): void
-        }
-        requestedPosts: {
-          send(data: any): void
-        }
-        testing: {
+        firebaseOutbound: {
           subscribe(callback: (data: any) => void): void
+        }
+        requestedContent: {
+          send(data: any): void
         }
       };
     }

@@ -8,7 +8,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-var MODE = process.env.npm_lifecycle_event === 'prod' ? 'production' : 'development';
+var MODE = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
 var withDebug = !process.env['npm_config_nodebug'];
 console.log('\x1b[36m%s\x1b[0m', `** Compile: mode "${MODE}", withDebug: ${withDebug}\n`);
 

@@ -1,9 +1,9 @@
-import { Elm } from '../../Main';
-import '../../UI/Loading';
-import '../../UI/Comment/Text';
-import '../../UI/ScrollToTop';
+import { Elm } from '../../elm/Main';
+import '../../elm/UI/Loading';
+import '../../elm/UI/Comment/Text';
+import '../../elm/UI/ScrollToTop';
 import iconDefinitions from './icon-definitions';
-import FirebasePort from '../../Data/Firebase';
+import FirebasePort from '../../elm/Data/Firebase';
 
 export default async (app: Elm.Main.App) => {
   // Embed global icon definitions

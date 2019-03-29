@@ -1,4 +1,4 @@
-import { Elm } from './Main';
+import { Elm } from './elm/Main';
 import './css/styles.scss';
 import initializeComponents from './js/components';
 

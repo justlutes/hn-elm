@@ -1,6 +1,6 @@
-import { CustomElement } from '../../js/components/custom_element';
+import { CustomElement } from '../../../js/components/custom_element';
 import './style.scss';
-import createSvg from '../../js/lib/createSvg';
+import createSvg from '../../../js/lib/createSvg';
 
 class LoadingSpinner extends CustomElement {
   private _color: string;

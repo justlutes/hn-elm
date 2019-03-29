@@ -1,4 +1,4 @@
-import { CustomElement } from '../../js/components/custom_element';
+import { CustomElement } from '../../../js/components/custom_element';
 import './style.scss';
 
 const OFFSET_THRESHOLD = 950;

@@ -1,4 +1,4 @@
-import { CustomElement } from '../../js/components/custom_element';
+import { CustomElement } from '../../../js/components/custom_element';
 import './style.scss';
 
 class CommentText extends CustomElement {

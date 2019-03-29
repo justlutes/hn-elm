@@ -8,8 +8,8 @@ import {
   getShowStories,
   getAskStories,
   getJobStories,
-} from '../js/lib/api';
-import { Item } from '../js/@types';
+} from '../../js/lib/api';
+import { Item } from '../../js/@types';
 
 interface FirebaseCmds {
   cmd: 'RequestPosts' | 'RequestComment';

@@ -1,4 +1,4 @@
-import { Elm } from '../../Main';
+import { Elm } from '../../elm/Main';
 
 export default async function(app: Elm.Main.App) {
   const icons = (await import(/* webpackChunkname: 'icons-svg' */ '../../assets/images/Icons.svg')) as unknown;

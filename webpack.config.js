@@ -31,6 +31,7 @@ var common = {
     extensions: ['.js', '.ts', '.elm', '.scss'],
   },
   module: {
+    noParse: /\.elm$/,
     rules: [
       {
         test: /\.ts$/,

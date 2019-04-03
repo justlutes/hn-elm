@@ -9,6 +9,7 @@ import Page.Item.Types exposing (..)
 import Route exposing (Route)
 import String.Extra as String
 import Ui.Comment as Comment
+import Ui.Comment.Text as CommentText
 import Ui.Loading.Main as UiLoading
 import Ui.Post as Post
 
@@ -46,7 +47,7 @@ viewContent model =
 viewParent : Post -> Html Msg
 viewParent post =
     let
-        { descendants, id, url, title, score } =
+        { descendants, id, url, title, score, text } =
             Post.metadata post
 
         time =
@@ -69,5 +70,10 @@ viewParent post =
                         , String.pluralize " hour ago" " hours ago" time
                         ]
                 ]
+            , if String.isEmpty text then
+                Html.text ""
+
+              else
+                Html.div [ Attributes.class "parent-text" ] [ CommentText.view text ]
             ]
         ]

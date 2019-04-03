@@ -27,7 +27,7 @@ viewContent model =
         ( Loaded comments, Loaded parent ) ->
             Html.div []
                 [ viewParent parent
-                , Keyed.node "ul" [ Attributes.class "comment-list" ] <| List.map Comment.view comments
+                , Keyed.node "ul" [ Attributes.class "comment-list" ] <| List.map (Comment.view ToggleComment model.toggledComments) comments
                 ]
 
         ( Loading, Loading ) ->

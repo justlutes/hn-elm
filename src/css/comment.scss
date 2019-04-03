@@ -13,21 +13,30 @@
     padding-bottom: 1em;
     margin-bottom: 1em;
     &:not(:last-child) {
-      border-bottom: 2px solid $light-grey;
+      border-bottom: 1px solid $light-grey;
     }
 
     .comment-content {
-      padding-top: 1em;
+      padding-top: 0.5em;
       font-size: 14px;
 
       div:first-child {
         padding-bottom: 0.5em;
         color: $secondary-color;
       }
+
+      button.comment-counter {
+        border: none;
+        background: transparent;
+        color: $accent-color;
+        margin-left: 5px;
+        padding: 0;
+        cursor: pointer;
+      }
     }
 
     .child-comment {
-      padding-left: 0.5em;
+      padding-left: 1em;
       margin-left: 1em;
       border-left: 1px solid $light-grey;
     }

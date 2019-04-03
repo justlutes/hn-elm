@@ -10,6 +10,7 @@ import Html.Events
 import Http
 import Page
 import Session exposing (Session)
+import Set exposing (Set)
 
 
 type alias Model =
@@ -17,6 +18,7 @@ type alias Model =
     , comments : Status (List Comment)
     , postId : Int
     , parent : Status Post
+    , toggledComments : Set Int
     }
 
 
@@ -33,6 +35,7 @@ type Msg
     | GotSession Session
     | CompletedCommentsLoad ( Post, List Comment )
     | PortFailure String
+    | ToggleComment Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -61,6 +64,17 @@ update msg model =
             ( { model | comments = Failed }
             , Cmd.none
             )
+
+        ToggleComment id ->
+            if Set.member id model.toggledComments then
+                ( { model | toggledComments = Set.remove id model.toggledComments }
+                , Cmd.none
+                )
+
+            else
+                ( { model | toggledComments = Set.insert id model.toggledComments }
+                , Cmd.none
+                )
 
 
 toSession : Model -> Session

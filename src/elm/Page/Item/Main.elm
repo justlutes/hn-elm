@@ -6,6 +6,7 @@ import Page.Item.Types exposing (..)
 import Page.Item.View as View
 import Process
 import Session exposing (Session)
+import Set
 import Task
 import Time
 
@@ -20,6 +21,7 @@ init session id =
       , comments = Loading
       , postId = id
       , parent = Loading
+      , toggledComments = Set.empty
       }
     , Task.perform (\_ -> Initialize) (Process.sleep 100)
     )

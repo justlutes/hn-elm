@@ -63,3 +63,17 @@
     }
   }
 }
+
+button.load-more-button {
+  margin-top: 2em;
+  font-size: 16px;
+  padding: 5px 10px;
+  background: $secondary-color;
+  color: #f2f2f2;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  &:hover {
+    background: fade-out($secondary-color, 0.25);
+  }
+}

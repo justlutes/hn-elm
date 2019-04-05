@@ -40,4 +40,8 @@ viewContent model =
 
 loadMoreButton : Html Msg
 loadMoreButton =
-    Html.button [ Events.onClick LoadMore ] [ Html.text "Load More" ]
+    Html.button
+        [ Attributes.class "load-more-button"
+        , Events.onClick LoadMore
+        ]
+        [ Html.text "Load More" ]

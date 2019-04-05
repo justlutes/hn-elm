@@ -1,7 +1,7 @@
 port module Data.Firebase exposing (Category(..), inBoundComments, inBoundPosts, requestComments, requestPosts, requestedContent)
 
 import Data.Comment as Comment exposing (Comment)
-import Data.Feed exposing (Feed)
+import Data.Feed exposing (FeedContent)
 import Data.Post as Post exposing (Post)
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
@@ -19,7 +19,7 @@ type Category
 
 
 type alias Config msg =
-    { onPosts : Feed -> msg
+    { onPosts : FeedContent -> msg
     , onFailure : String -> msg
     }
 
@@ -59,7 +59,7 @@ port requestedContent : (Decode.Value -> msg) -> Sub msg
 
 
 inBoundPosts :
-    { onPosts : Feed -> msg
+    { onPosts : FeedContent -> msg
     , onFailure : String -> msg
     }
     -> Sub msg
@@ -71,7 +71,7 @@ inBoundPosts config =
                     (\cmd ->
                         case cmd of
                             "RequestPosts" ->
-                                Decode.succeed Feed
+                                Decode.succeed FeedContent
                                     |> Decode.optional "cursor" (Decode.nullable Decode.int) Nothing
                                     |> Decode.required "posts" (Decode.list Post.postDecoder)
                                     |> Decode.map config.onPosts

@@ -1,5 +1,6 @@
 module Page.Jobs.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Data.Feed exposing (Feed(..))
 import Data.Firebase as Firebase
 import Html exposing (Html)
 import Page.Jobs.Types exposing (..)

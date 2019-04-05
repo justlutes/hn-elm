@@ -1,7 +1,7 @@
-module Page.Home.Types exposing (Model, Msg(..), Status(..), toSession, update)
+module Page.Home.Types exposing (Model, Msg(..), toSession, update)
 
 import Browser.Dom as Dom
-import Data.Feed as Feed exposing (Feed)
+import Data.Feed as Feed exposing (Feed(..), FeedContent)
 import Data.Firebase as Firebase
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
@@ -14,22 +14,15 @@ import Session exposing (Session)
 
 type alias Model =
     { session : Session
-    , feed : Status Feed
+    , feed : Feed
     }
-
-
-type Status a
-    = Loading
-    | LoadingSlowly
-    | Loaded a
-    | Failed
 
 
 type Msg
     = NoOp
     | GotSession Session
     | Initialize
-    | CompletedPostsLoad Feed
+    | CompletedPostsLoad FeedContent
     | PortFailure String
     | LoadMore
 
@@ -86,8 +79,8 @@ toSession model =
 getFeed : Model -> Maybe Feed
 getFeed model =
     case model.feed of
-        Loaded feed ->
-            Just feed
+        Feed.Loaded _ ->
+            Just model.feed
 
         _ ->
             Nothing

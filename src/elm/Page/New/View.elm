@@ -2,7 +2,7 @@ module Page.New.View exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes as Attributes
-import Page.Show.Types exposing (..)
+import Page.New.Types exposing (..)
 import Ui.Feed as Feed
 
 

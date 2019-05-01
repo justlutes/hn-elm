@@ -16,9 +16,6 @@ view post =
     let
         { descendants, id, url, title, score } =
             Post.metadata post
-
-        time =
-            Post.time post
     in
     ( String.fromInt id
     , Html.li []
@@ -35,9 +32,7 @@ view post =
                         , " points"
                         , " by "
                         , Post.author post
-                        , " "
-                        , String.fromInt time
-                        , String.pluralize " hour ago" " hours ago" time
+                        , Post.timeToString post
                         , " |"
                         ]
                 ]

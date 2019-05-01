@@ -3,7 +3,7 @@ export interface Item {
   deleted?: boolean;
   type?: 'job' | 'story' | 'comment' | 'poll' | 'pollopt';
   by?: string;
-  time?: Date;
+  time?: number;
   text?: string;
   dead?: boolean;
   parent?: number;

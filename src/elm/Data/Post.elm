@@ -1,7 +1,8 @@
-module Data.Post exposing (Post, author, detailsDecoder, id, metadata, postDecoder, time, url)
+module Data.Post exposing (Post, author, detailsDecoder, id, metadata, postDecoder, time, timeToString, url)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
+import String.Extra as String
 import Time exposing (Posix)
 import Url exposing (Url)
 
@@ -70,6 +71,34 @@ url (Post details) =
 time : Post -> Int
 time (Post details) =
     Time.toHour Time.utc <| Time.millisToPosix details.metadata.time
+
+
+timeToString : Post -> String
+timeToString (Post details) =
+    let
+        posixTime =
+            Time.millisToPosix (details.metadata.time * 1000)
+
+        timeByHour =
+            Time.toHour Time.utc posixTime
+    in
+    if timeByHour == 0 then
+        let
+            newTime =
+                Time.toMinute Time.utc posixTime
+        in
+        String.concat
+            [ " "
+            , String.fromInt newTime
+            , String.pluralize " minute ago" " minutes ago" newTime
+            ]
+
+    else
+        String.concat
+            [ " "
+            , String.fromInt timeByHour
+            , String.pluralize " hour ago" " hours ago" timeByHour
+            ]
 
 
 

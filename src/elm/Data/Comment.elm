@@ -1,5 +1,6 @@
-module Data.Comment exposing (Comment, author, commentDecoder, metadata, time)
+module Data.Comment exposing (Comment, author, commentDecoder, metadata, time, timeToString)
 
+import Extra.String as String
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Time exposing (Posix)
@@ -40,6 +41,34 @@ metadata (Comment details) =
 time : Comment -> Int
 time (Comment details) =
     Time.toHour Time.utc <| Time.millisToPosix details.metadata.time
+
+
+timeToString : Comment -> String
+timeToString (Comment details) =
+    let
+        posixTime =
+            Time.millisToPosix (details.metadata.time * 1000)
+
+        timeByHour =
+            Time.toHour Time.utc posixTime
+    in
+    if timeByHour == 0 then
+        let
+            newTime =
+                Time.toMinute Time.utc posixTime
+        in
+        String.concat
+            [ " "
+            , String.fromInt newTime
+            , String.pluralize " minute ago" " minutes ago" newTime
+            ]
+
+    else
+        String.concat
+            [ " "
+            , String.fromInt timeByHour
+            , String.pluralize " hour ago" " hours ago" timeByHour
+            ]
 
 
 

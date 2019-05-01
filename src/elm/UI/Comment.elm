@@ -41,12 +41,7 @@ viewComment toggle toggledList comment =
                 [ Html.span [] [ Html.text <| Comment.author comment ]
                 , Html.text " | "
                 , Html.span []
-                    [ Html.text <|
-                        String.concat
-                            [ String.fromInt time
-                            , String.pluralize " hour ago" " hours ago" time
-                            ]
-                    ]
+                    [ Html.text <| Comment.timeToString post ]
                 , Html.button
                     [ Attributes.class "comment-counter"
                     , Events.onClick <| toggle id

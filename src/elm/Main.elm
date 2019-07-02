@@ -3,7 +3,6 @@ module Main exposing (main)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Data.Flags exposing (Flags)
-import Html exposing (Html)
 import Page
 import Page.Ask.Main as Ask
 import Page.Blank as Blank

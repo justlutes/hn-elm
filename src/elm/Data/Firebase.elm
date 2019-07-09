@@ -1,8 +1,9 @@
-port module Data.Firebase exposing (Category(..), inBoundComments, inBoundPosts, requestComments, requestPosts, requestedContent)
+port module Data.Firebase exposing (Category(..), inBoundComments, inBoundPosts, inBoundUser, requestComments, requestPosts, requestUser, requestedContent)
 
 import Data.Comment as Comment exposing (Comment)
 import Data.Feed exposing (FeedContent)
 import Data.Post as Post exposing (Post)
+import Data.User as User exposing (User)
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode
@@ -16,12 +17,6 @@ type Category
     | Comment
     | Ask
     | Job
-
-
-type alias Config msg =
-    { onPosts : FeedContent -> msg
-    , onFailure : String -> msg
-    }
 
 
 port firebaseOutbound : Decode.Value -> Cmd msg
@@ -50,6 +45,15 @@ requestComments parentId =
         Encode.object
             [ ( "cmd", Encode.string "RequestComment" )
             , ( "parentId", Encode.string <| String.fromInt parentId )
+            ]
+
+
+requestUser : String -> Cmd msg
+requestUser id =
+    firebaseOutbound <|
+        Encode.object
+            [ ( "cmd", Encode.string "RequestUser" )
+            , ( "id", Encode.string id )
             ]
 
 
@@ -107,6 +111,37 @@ inBoundComments config =
                                     |> Decode.required "post" Post.postDecoder
                                     |> Decode.required "comments" (Decode.list Comment.commentDecoder)
                                     |> Decode.map config.onComments
+
+                            unmatched ->
+                                Decode.fail <| unmatched ++ "is not a supported command"
+                    )
+    in
+    requestedContent <|
+        \value ->
+            case Decode.decodeValue contentDecoder value of
+                Ok msg ->
+                    msg
+
+                Err e ->
+                    config.onFailure <| Decode.errorToString e
+
+
+inBoundUser :
+    { onUser : User -> msg
+    , onFailure : String -> msg
+    }
+    -> Sub msg
+inBoundUser config =
+    let
+        contentDecoder =
+            Decode.field "cmd" Decode.string
+                |> Decode.andThen
+                    (\cmd ->
+                        case cmd of
+                            "RequestUser" ->
+                                Decode.succeed User
+                                    |> Decode.required "user" User.userDecoder
+                                    |> Decode.map config.onUser
 
                             unmatched ->
                                 Decode.fail <| unmatched ++ "is not a supported command"

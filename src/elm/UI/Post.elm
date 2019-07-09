@@ -4,8 +4,6 @@ import Data.Post as Post exposing (Post)
 import Html exposing (Attribute, Html)
 import Html.Attributes as Attributes
 import Html.Attributes.Extra as Attributes
-import Html.Events as Events
-import Html.Keyed as Keyed
 import Route exposing (Route)
 import String.Extra as String
 import Url
@@ -14,7 +12,7 @@ import Url
 view : Post -> ( String, Html msg )
 view post =
     let
-        { descendants, id, url, title, score } =
+        { descendants, id, title, score } =
             Post.metadata post
     in
     ( String.fromInt id
@@ -25,17 +23,7 @@ view post =
             )
             [ Html.text title ]
         , Html.div [ Attributes.class "post-subcontent" ]
-            [ Html.span []
-                [ Html.text <|
-                    String.concat
-                        [ String.fromInt score
-                        , " points"
-                        , " by "
-                        , Post.author post
-                        , Post.timeToString post
-                        , " |"
-                        ]
-                ]
+            [ subTitle post
             , Html.a
                 [ Attributes.class "commment-link"
                 , Route.href (Route.Item id)
@@ -88,6 +76,27 @@ viewJobPost post =
 
 
 -- HELPERS
+
+
+subTitle : Post -> Html msg
+subTitle post =
+    let
+        { by, score } =
+            Post.metadata post
+    in
+    Html.span []
+        [ Html.span
+            []
+            [ Html.text
+                (String.fromInt score ++ " points by ")
+            ]
+        , Html.a
+            [ Route.href (Route.User by) ]
+            [ Html.text by ]
+        , Html.span
+            []
+            [ Html.text (Post.timeToString post ++ " |") ]
+        ]
 
 
 buildLink : Post -> List (Attribute msg)

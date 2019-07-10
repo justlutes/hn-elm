@@ -48,7 +48,7 @@ var common = {
       icons: [
         {
           src: path.resolve('src/assets/images/elm.png'),
-          sizes: [192],
+          sizes: [192, 512],
           destination: path.join('assets', 'images'),
         },
       ],

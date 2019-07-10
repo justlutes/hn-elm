@@ -1,7 +1,9 @@
-module Data.User exposing (User, userDecoder)
+module Data.User exposing (User, timeToString, userDecoder)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (optional, required)
+import String.Extra as String
+import Time
 
 
 type alias User =
@@ -12,6 +14,34 @@ type alias User =
     , about : String
     , submitted : List Int
     }
+
+
+timeToString : User -> String
+timeToString user =
+    let
+        posixTime =
+            Time.millisToPosix (user.created * 1000)
+
+        timeByHour =
+            Time.toHour Time.utc posixTime
+    in
+    if timeByHour == 0 then
+        let
+            newTime =
+                Time.toMinute Time.utc posixTime
+        in
+        String.concat
+            [ " "
+            , String.fromInt newTime
+            , String.pluralize " minute ago" " minutes ago" newTime
+            ]
+
+    else
+        String.concat
+            [ " "
+            , String.fromInt timeByHour
+            , String.pluralize " hour ago" " hours ago" timeByHour
+            ]
 
 
 userDecoder : Decoder User

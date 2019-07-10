@@ -36,7 +36,7 @@ type Model
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url navKey =
+init _ url navKey =
     changeRouteTo (Route.fromUrl url)
         (Redirect (Session.fromViewer navKey))
 

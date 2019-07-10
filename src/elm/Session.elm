@@ -27,5 +27,5 @@ fromViewer key =
 
 
 changes : (Session -> msg) -> Nav.Key -> Sub msg
-changes toMsg key =
+changes _ _ =
     Sub.none

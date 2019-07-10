@@ -2,7 +2,7 @@ module Page.Jobs.View exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes as Attributes
-import Page.Jobs.Types exposing (..)
+import Page.Jobs.Types exposing (Model, Msg(..))
 import Ui.Feed as Feed
 
 

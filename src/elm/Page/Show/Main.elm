@@ -3,12 +3,11 @@ module Page.Show.Main exposing (Model, Msg, init, subscriptions, toSession, upda
 import Data.Feed exposing (Feed(..))
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Show.Types exposing (..)
+import Page.Show.Types exposing (Model, Msg(..))
 import Page.Show.View as View
 import Process
 import Session exposing (Session)
 import Task
-import Time
 
 
 type alias Model =

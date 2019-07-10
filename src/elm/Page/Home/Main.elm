@@ -3,12 +3,11 @@ module Page.Home.Main exposing (Model, Msg, init, subscriptions, toSession, upda
 import Data.Feed exposing (Feed(..))
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Home.Types exposing (..)
+import Page.Home.Types exposing (Model, Msg(..))
 import Page.Home.View as View
 import Process
 import Session exposing (Session)
 import Task
-import Time
 
 
 type alias Model =

@@ -3,12 +3,11 @@ module Page.Ask.Main exposing (Model, Msg, init, subscriptions, toSession, updat
 import Data.Feed exposing (Feed(..))
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Ask.Types exposing (..)
+import Page.Ask.Types exposing (Model, Msg(..))
 import Page.Ask.View as View
 import Process
 import Session exposing (Session)
 import Task
-import Time
 
 
 type alias Model =

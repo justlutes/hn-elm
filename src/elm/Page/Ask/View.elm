@@ -2,7 +2,7 @@ module Page.Ask.View exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes as Attributes
-import Page.Ask.Types exposing (..)
+import Page.Ask.Types exposing (Model, Msg(..))
 import Ui.Feed as Feed
 
 

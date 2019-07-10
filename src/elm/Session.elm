@@ -1,4 +1,4 @@
-module Session exposing (Session, changes, fromViewer, navKey)
+module Session exposing (Session, changes, entities, fromViewer, navKey)
 
 import Browser.Navigation as Nav
 
@@ -27,5 +27,5 @@ fromViewer key =
 
 
 changes : (Session -> msg) -> Nav.Key -> Sub msg
-changes toMsg key =
+changes _ _ =
     Sub.none

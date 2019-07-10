@@ -49,8 +49,13 @@
     }
 
     span:first-child {
+      display: flex;
       position: relative;
       padding-right: 5px;
+
+      a {
+        margin-right: 0.5em;
+      }
     }
 
     .commment-link {

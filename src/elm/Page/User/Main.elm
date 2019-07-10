@@ -1,23 +1,23 @@
-module Page.New.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.User.Main exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
-import Data.Feed exposing (Feed(..))
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.New.Types exposing (Model, Msg(..))
-import Page.New.View as View
+import Page.User.Types exposing (Model, Msg(..), Status(..))
+import Page.User.View as View
 import Process
 import Session exposing (Session)
 import Task
 
 
 type alias Model =
-    Page.New.Types.Model
+    Page.User.Types.Model
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : Session -> String -> ( Model, Cmd Msg )
+init session userID =
     ( { session = session
-      , feed = Loading
+      , user = Loading
+      , userID = userID
       }
     , Task.perform (\_ -> Initialize) (Process.sleep 100)
     )
@@ -33,22 +33,25 @@ view model =
 
 
 type alias Msg =
-    Page.New.Types.Msg
+    Page.User.Types.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    Page.New.Types.update msg model
+    Page.User.Types.update msg model
 
 
 toSession : Model -> Session
 toSession =
-    Page.New.Types.toSession
+    Page.User.Types.toSession
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Session.changes GotSession (Session.navKey model.session)
-        , Firebase.inBoundPosts { onPosts = CompletedPostsLoad, onFailure = PortFailure }
+        , Firebase.inBoundUser
+            { onUser = CompletedUserLoad
+            , onFailure = PortFailure
+            }
         ]

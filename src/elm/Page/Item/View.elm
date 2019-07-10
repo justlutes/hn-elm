@@ -1,12 +1,11 @@
 module Page.Item.View exposing (view)
 
-import Data.Comment as Comment exposing (Comment)
+import Data.Comment as Comment
 import Data.Post as Post exposing (Post)
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Keyed as Keyed
-import Page.Item.Types exposing (..)
-import Route exposing (Route)
+import Page.Item.Types exposing (Model, Msg(..), Status(..))
 import String.Extra as String
 import Ui.Comment as Comment
 import Ui.Comment.Text as CommentText
@@ -47,7 +46,7 @@ viewContent model =
 viewParent : Post -> Html Msg
 viewParent post =
     let
-        { descendants, id, url, title, score, text } =
+        { title, score, text } =
             Post.metadata post
 
         time =

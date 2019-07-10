@@ -2,13 +2,12 @@ module Page.Item.Main exposing (Model, Msg, init, subscriptions, toSession, upda
 
 import Data.Firebase as Firebase
 import Html exposing (Html)
-import Page.Item.Types exposing (..)
+import Page.Item.Types exposing (Model, Msg(..), Status(..))
 import Page.Item.View as View
 import Process
 import Session exposing (Session)
 import Set
 import Task
-import Time
 
 
 type alias Model =

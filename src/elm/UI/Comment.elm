@@ -1,11 +1,11 @@
 module Ui.Comment exposing (view)
 
 import Data.Comment as Comment exposing (Comment)
-import Html exposing (Attribute, Html)
+import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Attributes.Extra as Attributes
 import Html.Events as Events
-import Route exposing (Route)
+import Route
 import Set exposing (Set)
 import String.Extra as String
 import Ui.Comment.Text as CommentText
@@ -34,14 +34,17 @@ viewComment toggle toggledList comment =
 
         time =
             Comment.time comment
+
+        author =
+            Comment.author comment
     in
     if closed then
         Html.div [ Attributes.class "comment-content" ]
             [ Html.div []
-                [ Html.span [] [ Html.text <| Comment.author comment ]
+                [ Html.span [] [ Html.text author ]
                 , Html.text " | "
                 , Html.span []
-                    [ Html.text <| Comment.timeToString post ]
+                    [ Html.text <| Comment.timeToString comment ]
                 , Html.button
                     [ Attributes.class "comment-counter"
                     , Events.onClick <| toggle id
@@ -60,7 +63,9 @@ viewComment toggle toggledList comment =
     else
         Html.div [ Attributes.class "comment-content" ]
             [ Html.div []
-                [ Html.span [] [ Html.text <| Comment.author comment ]
+                [ Html.a
+                    [ Route.href (Route.User author) ]
+                    [ Html.text author ]
                 , Html.text " | "
                 , Html.span []
                     [ Html.text <|

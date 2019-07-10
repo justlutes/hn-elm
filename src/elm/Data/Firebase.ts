@@ -1,18 +1,9 @@
-import { Elm } from '../Main';
-import {
-  getBestStories,
-  getNewStories,
-  getTopStories,
-  getComments,
-  getPost,
-  getShowStories,
-  getAskStories,
-  getJobStories,
-} from '../../js/lib/api';
-import { Item } from '../../js/@types';
+import {Item} from '../../js/@types';
+import {getAskStories, getBestStories, getComments, getJobStories, getNewStories, getPost, getShowStories, getTopStories, getUser,} from '../../js/lib/api';
+import {Elm} from '../Main';
 
 interface FirebaseCmds {
-  cmd: 'RequestPosts' | 'RequestComment';
+  cmd: 'RequestPosts'|'RequestComment'|'RequestUser';
 }
 
 interface RequestPosts extends FirebaseCmds {
@@ -24,11 +15,15 @@ interface RequestComment extends FirebaseCmds {
   parentId: number;
 }
 
-type Category = 'top' | 'new' | 'best' | 'show' | 'ask' | 'job';
+interface RequestUser extends FirebaseCmds {
+  id: string;
+}
+
+type Category = 'top'|'new'|'best'|'show'|'ask'|'job';
 
 export default function(app: Elm.Main.App) {
   // Get Firebase posts based on category type and cursor
-  async function requestPosts({ cmd, category, cursor }: RequestPosts) {
+  async function requestPosts({cmd, category, cursor}: RequestPosts) {
     let posts: Item[] = [];
 
     switch (category) {
@@ -60,14 +55,20 @@ export default function(app: Elm.Main.App) {
     }
     const newCursor = posts.length ? posts[posts.length - 1].id : null;
 
-    app.ports.requestedContent.send({ cmd, cursor: newCursor, posts });
+    app.ports.requestedContent.send({cmd, cursor: newCursor, posts});
   }
 
   // Get Firebase comments based on parent id
-  async function requestComments({ cmd, parentId }: RequestComment) {
+  async function requestComments({cmd, parentId}: RequestComment) {
     const comments = await getComments(parentId);
     const post = await getPost(parentId);
-    app.ports.requestedContent.send({ cmd, comments, post });
+    app.ports.requestedContent.send({cmd, comments, post});
+  }
+
+  // Get Hackernews user based on id
+  async function requestUser({cmd, id}: RequestUser) {
+    const user = await getUser(id);
+    app.ports.requestedContent.send({cmd, user});
   }
 
   app.ports.firebaseOutbound.subscribe(async (message: FirebaseCmds) => {
@@ -77,6 +78,9 @@ export default function(app: Elm.Main.App) {
 
       case 'RequestComment':
         return requestComments(message as RequestComment);
+
+      case 'RequestUser':
+        return requestUser(message as RequestUser);
     }
   });
 }

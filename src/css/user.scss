@@ -1,0 +1,16 @@
+.user-info {
+  & div {
+    margin: 1em 0;
+  }
+
+  .user-categories {
+    a {
+      text-decoration: none;
+      color: $secondary-color;
+      &:hover {
+        transition: color 333ms ease-in-out;
+        color: $accent-color;
+      }
+    }
+  }
+}

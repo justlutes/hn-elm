@@ -15,6 +15,7 @@ type Route
     | Ask
     | Jobs
     | Item Int
+    | User String
 
 
 parser : Parser (Route -> a) a
@@ -26,6 +27,7 @@ parser =
         , Parser.map Ask (s "ask")
         , Parser.map Jobs (s "jobs")
         , Parser.map Item (s "item" </> int)
+        , Parser.map User (s "user" </> string)
         ]
 
 
@@ -78,5 +80,8 @@ routeToString route =
 
                 Item id ->
                     [ "item", String.fromInt id ]
+
+                User id ->
+                    [ "user", id ]
     in
     "#/" ++ String.join "/" pieces

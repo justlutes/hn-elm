@@ -1,7 +1,7 @@
 module Html.Attributes.Extra exposing (maybe)
 
 import Html exposing (Attribute)
-import Html.Attributes exposing (..)
+import Html.Attributes as Attributes
 import Json.Encode as Encode
 
 
@@ -12,4 +12,4 @@ maybe =
 
 none : Attribute msg
 none =
-    property "" Encode.null
+    Attributes.property "" Encode.null

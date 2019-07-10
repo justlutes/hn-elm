@@ -1,17 +1,13 @@
 module Data.Comment exposing (Comment, author, commentDecoder, metadata, time, timeToString)
 
-import Extra.String as String
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
-import Time exposing (Posix)
+import String.Extra as String
+import Time
 
 
 type Comment
-    = Comment Details
-
-
-type alias Details =
-    { metadata : Metadata }
+    = Comment Metadata
 
 
 type alias Metadata =
@@ -30,24 +26,24 @@ type alias Metadata =
 
 author : Comment -> String
 author (Comment details) =
-    details.metadata.by
+    details.by
 
 
 metadata : Comment -> Metadata
 metadata (Comment details) =
-    details.metadata
+    details
 
 
 time : Comment -> Int
 time (Comment details) =
-    Time.toHour Time.utc <| Time.millisToPosix details.metadata.time
+    Time.toHour Time.utc <| Time.millisToPosix details.time
 
 
 timeToString : Comment -> String
 timeToString (Comment details) =
     let
         posixTime =
-            Time.millisToPosix (details.metadata.time * 1000)
+            Time.millisToPosix (details.time * 1000)
 
         timeByHour =
             Time.toHour Time.utc posixTime
@@ -78,12 +74,6 @@ timeToString (Comment details) =
 commentDecoder : Decoder Comment
 commentDecoder =
     Decode.succeed Comment
-        |> custom detailsDecoder
-
-
-detailsDecoder : Decoder Details
-detailsDecoder =
-    Decode.succeed Details
         |> custom metadataDecoder
 
 

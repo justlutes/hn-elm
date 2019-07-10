@@ -1,14 +1,7 @@
 module Page.Jobs.Types exposing (Model, Msg(..), toSession, update)
 
-import Browser.Dom as Dom
 import Data.Feed as Feed exposing (Feed(..), FeedContent)
 import Data.Firebase as Firebase
-import Data.Post as Post exposing (Post)
-import Html exposing (Html)
-import Html.Attributes
-import Html.Events
-import Http
-import Page
 import Session exposing (Session)
 
 
@@ -65,7 +58,7 @@ update msg model =
             , Firebase.requestPosts Firebase.Job maybeCursor
             )
 
-        PortFailure err ->
+        PortFailure _ ->
             ( { model | feed = Failed }
             , Cmd.none
             )

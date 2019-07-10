@@ -5,7 +5,6 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
 import Route as Route exposing (Route)
-import Session exposing (Session)
 
 
 type Page
@@ -16,12 +15,18 @@ type Page
     | Ask
     | Jobs
     | Item
+    | User
 
 
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =
     { title = title ++ " - HN"
-    , body = viewHeader page :: Html.node "hn-icon-sprites" [] [] :: content :: [ viewFooter page ]
+    , body =
+        [ viewHeader page
+        , Html.node "hn-icon-sprites" [] []
+        , content
+        , viewFooter page
+        ]
     }
 
 

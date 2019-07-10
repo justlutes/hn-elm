@@ -7,10 +7,15 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 
-var MODE = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
+var MODE =
+    process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
 var withDebug = !process.env['npm_config_nodebug'];
-console.log('\x1b[36m%s\x1b[0m', `** Compile: mode "${MODE}", withDebug: ${withDebug}\n`);
+console.log(
+    '\x1b[36m%s\x1b[0m',
+    `** Compile: mode "${MODE}", withDebug: ${withDebug}\n`);
 
 var common = {
   mode: MODE,
@@ -24,6 +29,29 @@ var common = {
     new HTMLWebpackPlugin({
       template: 'src/index.html',
       inject: 'body',
+    }),
+    new SWPrecacheWebpackPlugin({
+      cacheId: 'justlutes/hn-elm',
+      dontCacheBustUrlsMatching: /\.\w{8}\.w/,
+      filename: 'service-worker.js',
+      minify: false,
+      navigateFallback: 'index.html',
+      staticFileGlobsIgnorePatterns: [/\.DS_Store$/, /manifest\.json$/],
+    }),
+    new WebpackPwaManifest({
+      name: 'Hackernews PWA in ELM',
+      short_name: 'HN-Elm',
+      description: 'Hackernews PWA clone in Elm using Firebase',
+      background_color: '#ababab',
+      theme_color: '#34495e',
+      start_url: '/',
+      icons: [
+        {
+          src: path.resolve('src/assets/images/elm.png'),
+          sizes: [192],
+          destination: path.join('assets', 'images'),
+        },
+      ],
     }),
   ],
   resolve: {
@@ -81,14 +109,15 @@ var common = {
 
 if (MODE === 'development') {
   module.exports = merge(common, {
-    plugins: [new webpack.NamedModulesPlugin(), new webpack.NoEmitOnErrorsPlugin()],
+    plugins:
+        [new webpack.NamedModulesPlugin(), new webpack.NoEmitOnErrorsPlugin()],
     module: {
       rules: [
         {
           test: /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
           use: [
-            { loader: 'elm-hot-webpack-loader' },
+            {loader: 'elm-hot-webpack-loader'},
             {
               loader: 'elm-webpack-loader',
               options: {
@@ -147,7 +176,9 @@ if (MODE === 'production') {
         {
           test: /\.scss$/,
           exclude: [/elm-stuff/, /node_modules/],
-          loaders: [MiniCssExtractPlugin.loader, 'css-loader?url=false', 'sass-loader'],
+          loaders: [
+            MiniCssExtractPlugin.loader, 'css-loader?url=false', 'sass-loader'
+          ],
         },
       ],
     },

@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Data.Flags exposing (Flags)
+import Html
 import Page
 import Page.Ask.Main as Ask
 import Page.Blank as Blank
@@ -12,6 +13,7 @@ import Page.Jobs.Main as Jobs
 import Page.New.Main as New
 import Page.NotFound as NotFound
 import Page.Show.Main as Show
+import Page.User.Main as User
 import Route exposing (Route)
 import Session as Session exposing (Session)
 import Url exposing (Url)
@@ -30,6 +32,7 @@ type Model
     | Jobs Jobs.Model
     | NotFound Session
     | Redirect Session
+    | User User.Model
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -79,6 +82,9 @@ view model =
         Jobs subModel ->
             viewPage Page.Jobs JobsMsg (Jobs.view subModel)
 
+        User subModel ->
+            viewPage Page.User UserMsg (User.view subModel)
+
 
 
 -- UPDATE
@@ -94,6 +100,7 @@ type Msg
     | ShowMsg Show.Msg
     | AskMsg Ask.Msg
     | JobsMsg Jobs.Msg
+    | UserMsg User.Msg
     | GotSession Session
 
 
@@ -123,6 +130,9 @@ toSession page =
 
         Jobs subModel ->
             Jobs.toSession subModel
+
+        User subModel ->
+            User.toSession subModel
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -161,6 +171,10 @@ changeRouteTo maybeRoute model =
         Just (Route.Item id) ->
             Item.init session id
                 |> updateWith Item ItemMsg
+
+        Just (Route.User id) ->
+            User.init session id
+                |> updateWith User UserMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -216,6 +230,10 @@ update msg model =
             Jobs.update subMsg subModel
                 |> updateWith Jobs JobsMsg
 
+        ( UserMsg subMsg, User subModel ) ->
+            User.update subMsg subModel
+                |> updateWith User UserMsg
+
         ( _, _ ) ->
             ( model, Cmd.none )
 
@@ -261,6 +279,9 @@ subscriptions model =
 
         Jobs subModel ->
             Sub.map JobsMsg (Jobs.subscriptions subModel)
+
+        User subModel ->
+            Sub.map UserMsg (User.subscriptions subModel)
 
 
 main : Program Flags Model Msg

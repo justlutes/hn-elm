@@ -4,7 +4,7 @@ import Data.Comment as Comment exposing (Comment)
 import Data.Feed exposing (FeedContent)
 import Data.Post as Post exposing (Post)
 import Data.User as User exposing (User)
-import Json.Decode as Decode exposing (Decoder, Value)
+import Json.Decode as Decode
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode
 
@@ -139,9 +139,8 @@ inBoundUser config =
                     (\cmd ->
                         case cmd of
                             "RequestUser" ->
-                                Decode.succeed User
+                                Decode.succeed config.onUser
                                     |> Decode.required "user" User.userDecoder
-                                    |> Decode.map config.onUser
 
                             unmatched ->
                                 Decode.fail <| unmatched ++ "is not a supported command"

@@ -1,14 +1,14 @@
-module Data.Post exposing (Post, author, detailsDecoder, id, metadata, postDecoder, time, timeToString, url)
+module Data.Post exposing (Post, author, id, metadata, postDecoder, time, timeToString, url)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import String.Extra as String
-import Time exposing (Posix)
+import Time
 import Url exposing (Url)
 
 
 type Post
-    = Post Details
+    = Post Metadata
 
 
 type Type
@@ -17,11 +17,6 @@ type Type
     | Comment
     | Poll
     | PollOpt
-
-
-type alias Details =
-    { metadata : Metadata
-    }
 
 
 type alias Metadata =
@@ -48,36 +43,36 @@ type alias Metadata =
 
 author : Post -> String
 author (Post details) =
-    details.metadata.by
+    details.by
 
 
 metadata : Post -> Metadata
 metadata (Post details) =
-    details.metadata
+    details
 
 
 id : Post -> Int
 id (Post details) =
-    details.metadata.id
+    details.id
 
 
 url : Post -> Maybe Url
 url (Post details) =
-    details.metadata.url
+    details.url
         |> Maybe.map Url.fromString
         |> Maybe.withDefault Nothing
 
 
 time : Post -> Int
 time (Post details) =
-    Time.toHour Time.utc <| Time.millisToPosix details.metadata.time
+    Time.toHour Time.utc <| Time.millisToPosix details.time
 
 
 timeToString : Post -> String
 timeToString (Post details) =
     let
         posixTime =
-            Time.millisToPosix (details.metadata.time * 1000)
+            Time.millisToPosix (details.time * 1000)
 
         timeByHour =
             Time.toHour Time.utc posixTime
@@ -108,12 +103,6 @@ timeToString (Post details) =
 postDecoder : Decoder Post
 postDecoder =
     Decode.succeed Post
-        |> custom detailsDecoder
-
-
-detailsDecoder : Decoder Details
-detailsDecoder =
-    Decode.succeed Details
         |> custom metadataDecoder
 
 

@@ -4,7 +4,7 @@ import Data.Post as Post exposing (Post)
 import Html exposing (Attribute, Html)
 import Html.Attributes as Attributes
 import Html.Attributes.Extra as Attributes
-import Route exposing (Route)
+import Route
 import String.Extra as String
 import Url
 
@@ -12,7 +12,7 @@ import Url
 view : Post -> ( String, Html msg )
 view post =
     let
-        { descendants, id, title, score } =
+        { descendants, id, title } =
             Post.metadata post
     in
     ( String.fromInt id

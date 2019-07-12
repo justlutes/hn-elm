@@ -2,15 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="description" content="Hackernews in Elm and Firebase" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
-
-    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
+    <meta name="theme-color" content="#34495e" />
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <link rel="icon" type="image/png" href="/images/favicon.ico" />
   </head>
 
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then(function() {
+          console.log('Service Worker Registered');
+        });
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
   </body>
 </html>

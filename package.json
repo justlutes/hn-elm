@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@firebase/app-types": "^0.3.2",
-    "firebase": "^5.5.5"
+    "firebase": "^5.5.5",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "webpack-pwa-manifest": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",

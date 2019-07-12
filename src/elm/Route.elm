@@ -4,6 +4,7 @@ import Browser.Navigation as Nav
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Url exposing (Url)
+import Url.Builder as Builder
 import Url.Parser as Parser exposing ((</>), Parser, int, oneOf, s, string)
 
 
@@ -47,8 +48,7 @@ replaceUrl key route =
 
 fromUrl : Url -> Maybe Route
 fromUrl url =
-    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
-        |> Parser.parse parser
+    Parser.parse parser url
 
 
 
@@ -58,30 +58,31 @@ fromUrl url =
 routeToString : Route -> String
 routeToString route =
     let
-        pieces =
+        ( pathPieces, queryPieces ) =
             case route of
                 Home ->
-                    []
+                    ( [], [] )
 
                 Root ->
-                    []
+                    ( [], [] )
 
                 New ->
-                    [ "new" ]
+                    ( [ "new" ], [] )
 
                 Show ->
-                    [ "show" ]
+                    ( [ "show" ], [] )
 
                 Ask ->
-                    [ "ask" ]
+                    ( [ "ask" ], [] )
 
                 Jobs ->
-                    [ "jobs" ]
+                    ( [ "jobs" ], [] )
 
                 Item id ->
-                    [ "item", String.fromInt id ]
+                    ( [ "item", String.fromInt id ], [] )
 
                 User id ->
-                    [ "user", id ]
+                    ( [ "user", id ], [] )
     in
-    "#/" ++ String.join "/" pieces
+    -- "#/" ++ String.join "/" pieces
+    Builder.absolute pathPieces queryPieces

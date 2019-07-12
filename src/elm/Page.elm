@@ -33,8 +33,17 @@ view page { title, content } =
 viewHeader : Page -> Html msg
 viewHeader page =
     Html.nav []
-        [ Html.a [ Route.href Route.Home ]
-            [ Html.img [ Attributes.src "images/elm.png", Attributes.class "nav-logo" ] [] ]
+        [ Html.a
+            [ Route.href Route.Home
+            , Attributes.attribute "aria-label" "View Home Page"
+            ]
+            [ Html.img
+                [ Attributes.src "images/elm.png"
+                , Attributes.class "nav-logo"
+                , Attributes.alt "elm logo"
+                ]
+                []
+            ]
         , viewMenu page
         ]
 

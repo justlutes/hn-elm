@@ -22,14 +22,6 @@ src/
 
 ### Building
 
--- TSLint
-
 ```shell
   yarn build
-```
-
-### Elm-Typescript-Interop
-
-```shell
-  yarn generate
 ```

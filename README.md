@@ -1,6 +1,6 @@
 # HN-ELM
 
-Hackernews clone built with Elm, Typescript, and Web components
+PWA of Hackernews built with Elm, Typescript, and Web components
 
 ## Project Structure
 

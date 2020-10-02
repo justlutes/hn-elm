@@ -84,5 +84,4 @@ routeToString route =
                 User id ->
                     ( [ "user", id ], [] )
     in
-    -- "#/" ++ String.join "/" pieces
     Builder.absolute pathPieces queryPieces

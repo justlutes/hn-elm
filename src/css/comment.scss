@@ -20,6 +20,10 @@
       padding-top: 0.5em;
       font-size: 14px;
 
+      .comment-author {
+        color: $accent-color;
+      }
+
       div:first-child {
         padding-bottom: 0.5em;
         color: $secondary-color;

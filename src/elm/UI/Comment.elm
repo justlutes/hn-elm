@@ -41,7 +41,7 @@ viewComment toggle toggledList comment =
     if closed then
         Html.div [ Attributes.class "comment-content" ]
             [ Html.div []
-                [ Html.span [] [ Html.text author ]
+                [ Html.span [ Attributes.class "comment-author" ] [ Html.text author ]
                 , Html.text " | "
                 , Html.span []
                     [ Html.text <| Comment.timeToString comment ]
@@ -64,7 +64,9 @@ viewComment toggle toggledList comment =
         Html.div [ Attributes.class "comment-content" ]
             [ Html.div []
                 [ Html.a
-                    [ Route.href (Route.User author) ]
+                    [ Attributes.class "comment-author"
+                    , Route.href (Route.User author)
+                    ]
                     [ Html.text author ]
                 , Html.text " | "
                 , Html.span []

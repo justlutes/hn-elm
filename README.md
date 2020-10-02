@@ -2,7 +2,7 @@
 
 PWA of Hackernews built with Elm, Typescript, and Web components
 
-## Project Structure
+## Project Directory Structure
 
 ```sh
 src/
